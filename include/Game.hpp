@@ -3,21 +3,26 @@
 
 #include <string>
 
-#include "Grid.hpp"
-#include "IRenderer.hpp"
-#include "GameState.hpp"
+#include "src/Grid.hpp"
+#include "src/IRenderer.hpp"
+#include "src/GameState.hpp"
 #include "IEvolutionStrategy.hpp"
 
 class Game
 {
 protected:
-    Grid grid;
+    Grid *grid;
     IRenderer *renderer;
     GameState *currentState;
     IEvolutionStrategy *evolutionStrategy;
+    FileHandler *fileHandler;
+
     float iteration Delay;
 
 public:
+    bool isPaused;
+    bool isGameOver;
+
     Game(std::string filename);
 
     void run();
