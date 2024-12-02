@@ -1,5 +1,4 @@
-#ifndef GAME
-#define GAME
+#pragma once
 
 #include <string>
 
@@ -33,5 +32,3 @@ public:
     void setState(GameState *state);
     void setEvolutionStrategy(IEvolutionStrategy *strategy);
 };
-
-#endif
