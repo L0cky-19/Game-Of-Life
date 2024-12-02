@@ -1,6 +1,4 @@
-#ifndef GRAPHIC_RENDERER_HPP
-#define GRAPHIC_RENDERER_HPP
-
+#pragma once
 #include "IRenderer.hpp"
 #include <SFML/Graphics.hpp>
 
@@ -8,12 +6,11 @@ class GraphicRenderer : public IRenderer {
 public:
     GraphicRenderer();
     virtual ~GraphicRenderer() = default;
-    void update(Subject* subject) override;
+    
     void render(Grid* grid) override;
+    void update(Subject* subject) override;
     sf::RenderWindow& getWindow() { return window; }
 
 private:
     sf::RenderWindow window;
 };
-
-#endif

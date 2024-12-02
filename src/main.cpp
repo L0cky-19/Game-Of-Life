@@ -1,27 +1,27 @@
 #include "../include/renderer/ConsoleRenderer.hpp"
 #include "../include/renderer/GraphicRenderer.hpp"
-#include <iostream>
+#include "../tests/renderer/mocks/MockGrid.hpp"
 
 int main() {
-    ConsoleRenderer consoleRenderer;
+    testing::MockGrid mockGrid;
     GraphicRenderer graphicRenderer;
     
-    // Boucle principale pour tester les renderers
+    // Attacher le renderer à la grille mock
+    mockGrid.attach(&graphicRenderer);
+    
+    // Boucle principale
     bool running = true;
     while (running) {
-        // Test du ConsoleRenderer
-        consoleRenderer.render(nullptr);
-        
-        // Test du GraphicRenderer
-        graphicRenderer.render(nullptr);
-        
-        // Pour le GraphicRenderer, il faut gérer les événements SFML
+        // Gérer les événements SFML
         sf::Event event;
         while (graphicRenderer.getWindow().pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 running = false;
             }
         }
+        
+        // Simuler un changement dans la grille
+        mockGrid.notify();
     }
     
     return 0;
