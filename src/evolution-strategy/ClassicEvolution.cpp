@@ -17,3 +17,7 @@ bool ClassicEvolution::evolve(Cell* cell, int liveNeighbors) const  {
 }
 
 ClassicEvolution::ClassicEvolution() {}
+
+string ClassicEvolution::getName() const  {
+        return "Classic";
+    }

@@ -21,3 +21,7 @@ bool HighLifeEvolution::evolve(Cell* cell, int liveNeighbors) const {
 HighLifeEvolution::HighLifeEvolution() {
 
 }
+
+string HighLifeEvolution::getName() const  {
+        return "Highlife";
+    }

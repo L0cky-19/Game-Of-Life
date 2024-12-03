@@ -36,3 +36,7 @@ void GraphicRenderer::render(Grid* grid) {
 
     window.display();
 }
+
+string GraphicRenderer::getName() const  {
+    return "Graphic";
+}

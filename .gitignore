@@ -1,1 +1,4 @@
 makefile
+build/
+.vscode/
+main.o

@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include "../include/Game.hpp"
 #include "../include/game-state/GameState.hpp"
 #include "../include/game-state/PauseState.hpp"
@@ -12,105 +11,48 @@
 
 using namespace std;
 
+//TODO: check if Interfaces keep their name if they are not virtual anymore?
+
 /**
- * 1. Set current game state to play
- * 2. Set evolution strategy
- * 3. Set renderer
- * 4. Iteration delay
  * todo: nb of iterations
  */
 void Game::setup()  //!todo: add class or create game methods to separate this data?
 {
-
-    // todo maybe make this kind of class? UserConfig config = getUserInput();
-    this->currentState = new PlayState();
-
-    // ? user config
-    int evolutionStrategy = -1;
-    int renderer = -1;
-    int iterationDelay = -1;
+    //this->currentState = new PlayState();
 
     cout << "=== Evolution Simulation Settings ===\n";
 
-    // Input for evolution strategy
-    while (true) {
-        cout << "Select evolution strategy (0 for basic, 1 for highlife): ";
-        cin >> evolutionStrategy;
+    //todo: inconsistent, Config class?
+    string filename = this->inputLoadChoice();
+    GridData gridData = this->inputGridData();
+    this->inputRenderer();
+    this->inputEvolutionStrategy();
+    this->inputIterationDelay();
 
-        if (cin.fail() || (evolutionStrategy != 0 && evolutionStrategy != 1)) {
-            cin.clear(); // Clear the error flags
-            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
-            cout << "Invalid input. Please enter 0 or 1.\n";
-        } else {
-            break;
-        }
-    }
+    this->displaySettings(filename, gridData);
 
-    // Input for renderer
-    while (true) {
-        cout << "Select renderer (0 for console, 1 for graphical interface): ";
-        cin >> renderer;
 
-        if (cin.fail() || (renderer != 0 && renderer != 1)) {
-            cin.clear(); // Clear the error flags
-            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
-            cout << "Invalid input. Please enter 0 or 1.\n";
-        } else {
-            break;
-        }
-    }
+    // Initialize the grid with the specified dimensions and toroidal setting
+    //this->grid = new Grid(gridWidth, gridHeight, toroidal);
+} //TODO: subscriptions & for static_cast float use stoi
 
-    // Input for iteration delay
-    while (true) {
-        cout << "Enter iteration delay in milliseconds: ";
-        cin >> iterationDelay;
-
-        if (cin.fail() || iterationDelay < 0) {
-            cin.clear(); // Clear the error flags
-            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
-            cout << "Invalid input. Please enter a non-negative number.\n";
-        } else {
-            break;
-        }
-    }
-
-    // Display the gathered settings
+void Game::displaySettings(string filename, GridData gridData)
+{
     cout << "\n=== Settings Summary ===\n";
-    cout << "Evolution Strategy: " << (evolutionStrategy == 0 ? "Basic" : "Highlife") << "\n";
-    cout << "Renderer: " << (renderer == 0 ? "Console" : "Graphical Interface") << "\n";
-    cout << "Iteration Delay: " << iterationDelay << " ms\n";
-
-    // set the new values
-    //TODO: use stoi as iterationDelay is an int
-    this->setIterationDelay(static_cast<float>(iterationDelay)); // Assuming iterationDelay is a float
-    if (evolutionStrategy == 0) {
-        this->setEvolutionStrategy(new ClassicEvolution()); // Assuming ClassicEvolution is defined
-    } else {
-        this->setEvolutionStrategy(new HighLifeEvolution()); // Assuming HighLifeEvolution is defined
+    cout << "Grid Width: " << gridData.width << "\n";
+    cout << "Grid Height: " << gridData.height << "\n";
+    cout << "Is Toroidal: " << (gridData.isToroidal ? "Yes" : "No") << "\n";
+    //TODO: peut être ajouter pour les strategies une propriété .name?
+    cout << "Evolution Strategy: " << this->getEvolutionStrategy()->getName() << "\n";
+    cout << "Renderer: " << this->getRenderer()->getName() << "\n";
+    cout << "Iteration Delay: " << this->getIterationDelay() << " ms\n";
+    cout << "Playing from saved game: " << (filename.empty() ? "No" : "Yes") << "\n";
+    if (!filename.empty()) {
+        cout << "Saved Game File: " << filename << "\n"; // Display the filename
     }
-
-    if (renderer == 0) {
-        this->setRenderer(new ConsoleRenderer()); // Assuming ConsoleRenderer is defined
-    } else {
-        this->setRenderer(new GraphicRenderer()); // Assuming GraphicRenderer is defined
-    }
-    //TODO: subscribe?
-
-    /*
-    grid = new Grid(config.size);
-
-    if (config.loadFromFile)
-    {
-        vector<bool> cells = fileHandler->loadGridFromFile(config.filename);
-        grid->initializeFromVector(cells);
-    }
-    else
-    {
-        grid->initializeRandom(); // ? should change that
-    }
-
-    grid->subscribe(this);*/
 }
+
+
 void Game::run()
 {
     /*
@@ -160,3 +102,122 @@ void Game::setIterationDelay(int iterationDelay)
 }
 
 Game::Game() {} //TODO: needed or not?
+
+string Game::inputLoadChoice() {
+    char loadChoice;
+    string filename;
+
+    cout << "Do you want to load a saved game? (y/n): ";
+    cin >> loadChoice;
+
+    if (loadChoice == 'y' || loadChoice == 'Y') {
+        do {
+            cout << "Enter the name of the saved game file: ";
+            cin >> filename;
+
+            if (filename.empty()) {
+                cout << "Invalid input. Please enter a valid filename.\n";
+            }
+        } while (filename.empty());
+    }
+    return filename.empty() ? "" : filename;
+}
+
+GridData Game::inputGridData() { //TODO: validation?
+    GridData gridData;
+    char toroidal;
+
+    cout << "Enter grid width: ";
+    cin >> gridData.width;
+
+    cout << "Enter grid height: ";
+    cin >> gridData.height;
+
+    cout << "Is the grid toroidal? (y/n): ";
+    cin >> toroidal;
+
+    bool isToroidal = (isToroidal == 'y' || isToroidal == 'Y');
+    gridData.isToroidal = isToroidal;
+
+    return gridData;
+
+}
+
+void Game::inputEvolutionStrategy() {
+    int evolutionStrategy = -1;
+    while (true) {
+        cout << "Select evolution strategy (0 for basic, 1 for highlife): ";
+        cin >> evolutionStrategy;
+
+        if (cin.fail() || (evolutionStrategy != 0 && evolutionStrategy != 1)) {
+            cin.clear(); // Clear the error flags
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
+            cout << "Invalid input. Please enter 0 or 1.\n";
+        } else {
+            break;
+        }
+    }
+
+    // todo: enum?
+    if (evolutionStrategy == 0) {
+        this->setEvolutionStrategy(new ClassicEvolution()); // Assuming ClassicEvolution is defined
+    } else {
+        this->setEvolutionStrategy(new HighLifeEvolution()); // Assuming HighLifeEvolution is defined
+    }
+}
+
+
+void Game::inputRenderer() {
+    int renderer = -1;
+  while (true) {
+        cout << "Select renderer (0 for console, 1 for graphical interface): ";
+        cin >> renderer;
+
+        if (cin.fail() || (renderer != 0 && renderer != 1)) {
+            cin.clear(); // Clear the error flags
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
+            cout << "Invalid input. Please enter 0 or 1.\n";
+        } else {
+            break;
+        }
+    }
+    //todo: enum ? SUBSCRIBE!!
+    if (renderer == 0) {
+        this->setRenderer(new ConsoleRenderer()); // Assuming ConsoleRenderer is defined
+    } else {
+        this->setRenderer(new GraphicRenderer()); // Assuming GraphicRenderer is defined
+    }
+}
+
+void Game::inputIterationDelay() {
+
+    int iterationDelay = -1;
+while (true) {
+
+        cout << "Enter iteration delay in milliseconds: ";
+        cin >> iterationDelay;
+
+        if (cin.fail() || iterationDelay < 0) {
+            cin.clear(); // Clear the error flags
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
+            cout << "Invalid input. Please enter a non-negative number.\n";
+        } else {
+            break;
+        }
+    }
+    this->setIterationDelay(static_cast<float>(iterationDelay)); // Assuming iterationDelay is a float
+
+}
+
+
+IRenderer* Game::getRenderer() const {
+    return renderer;
+}
+
+IEvolutionStrategy* Game::getEvolutionStrategy() const {
+    return evolutionStrategy;
+}
+
+float Game::getIterationDelay() const { //TODO: int
+    return this->iterationDelay;
+}

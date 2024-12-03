@@ -19,6 +19,7 @@ SRCS = $(SRC_DIR)/main.cpp \
        $(SRC_DIR)/evolution-strategy/HighLifeEvolution.cpp \
        $(SRC_DIR)/game-state/PlayState.cpp \
        $(SRC_DIR)/game-state/PauseState.cpp \
+
        # TODO: $(SRC_DIR)/file-handler/FileHandler.cpp \/
 
 # Génération des chemins des fichiers objets dans build/
