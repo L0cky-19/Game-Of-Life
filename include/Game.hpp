@@ -1,11 +1,10 @@
 #pragma once
-
 #include <string>
 
-#include "src/Grid.hpp"
-#include "src/IRenderer.hpp"
-#include "src/GameState.hpp"
-#include "IEvolutionStrategy.hpp"
+#include "./renderer/IRenderer.hpp"
+#include "./evolution-strategy/IEvolutionStrategy.hpp"
+#include "./file-handler/FileHandler.hpp"
+#include "./game-state/GameState.hpp"
 
 class Game
 {
@@ -15,20 +14,22 @@ protected:
     GameState *currentState;
     IEvolutionStrategy *evolutionStrategy;
     FileHandler *fileHandler;
-
-    float iteration Delay;
+    float iterationDelay;
 
 public:
     bool isPaused;
     bool isGameOver;
 
-    Game(std::string filename);
+    Game(/*std::string filename*/);
 
     void run();
     void setup();
     void pause();
     void resume();
+
+    // setters
     void setRenderer(IRenderer *renderer);
     void setState(GameState *state);
     void setEvolutionStrategy(IEvolutionStrategy *strategy);
+    void setIterationDelay(int iterationDelay);
 };

@@ -1,12 +1,11 @@
 #pragma once
-#include "Cell.hpp"
+#include "../Cell.hpp"
 
 //TODO: check if we respect strategy design pattern
 //TODO: no implementation file needed right?
 class IEvolutionStrategy {
     public:
         virtual ~IEvolutionStrategy() = default;
-
         // true si vivante prochaine étape, false sinon
-        void bool evolve(Cell* cell,int liveNeighbors) const = 0;
-}
+        virtual bool evolve(Cell* cell,int liveNeighbors) const = 0;
+};

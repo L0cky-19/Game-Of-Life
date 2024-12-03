@@ -1,8 +1,9 @@
 #pragma once
 
-#include "IEvolutionStrategy.h"
+#include "IEvolutionStrategy.hpp"
 
 class HighLifeEvolution : public IEvolutionStrategy {
 public:
-    bool evolve(Cell* cell, int liveNeighbors)
+    HighLifeEvolution();
+    bool evolve(Cell* cell, int liveNeighbors) const override;
 };

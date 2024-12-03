@@ -1,15 +1,13 @@
 #pragma once
 
 #include <vector>
-using namespace std;
-
+#include "./renderer/Subject.hpp"  // Include Subject so Grid can inherit from it
 #include "Cell.hpp"
 #include "./evolution-strategy/IEvolutionStrategy.hpp"
-//#include "Pattern.cpp"
 
-class Grid {
+class Grid : public Subject {  // Now Grid inherits from Subject
 private:
-    vector<vector<Cell>> cells;
+    std::vector<std::vector<Cell>> cells;
     int width;
     int height;
     bool isToroidal;
@@ -20,10 +18,12 @@ public:
 
     void initGrid(int width, int height);
 
-    void initCells(const vector<vector<int>>& tab);
+    void initCells(const std::vector<std::vector<int>>& tab);
     void initCellsRandom();
 
-    vector<vector<int>> calculateNextGeneration(IEvolutionStrategy* evolutionStrategy);
+    std::vector<std::vector<int>> calculateNextGen(IEvolutionStrategy* evolutionStrategy);
 
-    //void applyPattern(const Pattern& pattern, const vector<int>& position);
+    // getters
+    int getWidth() const;
+    int getHeight() const;
 };

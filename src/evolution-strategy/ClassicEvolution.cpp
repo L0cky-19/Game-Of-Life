@@ -1,7 +1,7 @@
 #include "../../include/evolution-strategy/ClassicEvolution.hpp"
 #include "../../include/Cell.hpp"
 
-bool ClassicEvolution::evolve(Cell* cell, int liveNeighbors) {
+bool ClassicEvolution::evolve(Cell* cell, int liveNeighbors) const  {
     if (cell == nullptr) {
         return false;
     }

@@ -1,45 +1,45 @@
 CXX = g++
-CXXFLAGS = -I"C:\SFML\include" -I.
-LDFLAGS = -L"C:\SFML\lib"
+CXXFLAGS = -I/mnt/c/SFML/include -I.
+LDFLAGS = -L/mnt/c/SFML/lib
 LIBS = -lsfml-graphics -lsfml-window -lsfml-system
 
-# Dossiers
+# Directories
 BUILD_DIR = build
 SRC_DIR = src
 INCLUDE_DIR = include
 
-# Fichiers source
-SRCS = $(SRC_DIR)/main_test_graphic.cpp \
+# Source files
+SRCS = $(SRC_DIR)/main.cpp \
        $(SRC_DIR)/renderer/GraphicRenderer.cpp \
        $(SRC_DIR)/renderer/ConsoleRenderer.cpp
 
-# Génération des chemins des fichiers objets dans build/
+# Generate object file paths in the build directory
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 
-# Nom de l'exécutable
+# Executable name
 TARGET = $(BUILD_DIR)/game-of-life
 
-# Règle par défaut
+# Default rule
 all: create_dirs $(TARGET)
-	copy C:\SFML\bin\*.dll $(BUILD_DIR)
-	$(TARGET)
+	cp /mnt/c/SFML/bin/*.dll $(BUILD_DIR)/
+	./$(TARGET)
 
-# Création des répertoires nécessaires
+# Create necessary directories
 create_dirs:
-	@if not exist $(BUILD_DIR) mkdir $(BUILD_DIR)
-	@if not exist $(BUILD_DIR)\renderer mkdir $(BUILD_DIR)\renderer
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)/renderer
 
-# Création de l'exécutable
+# Link executable
 $(TARGET): $(OBJS)
 	$(CXX) $(OBJS) -o $(TARGET) $(LDFLAGS) $(LIBS)
 
-# Règle de compilation pour les fichiers source
+# Compile source files
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
-	@if not exist $(@D) mkdir $(@D)
+	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Nettoyage
+# Clean build files
 clean:
-	if exist $(BUILD_DIR) rmdir /s /q $(BUILD_DIR)
+	rm -rf $(BUILD_DIR)
 
 .PHONY: all clean create_dirs
