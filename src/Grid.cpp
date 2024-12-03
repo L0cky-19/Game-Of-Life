@@ -1,5 +1,5 @@
 #include "../include/Grid.hpp"
-#include "Cell.cpp"
+#include "../include/Cell.hpp"
 #include <cstdlib>
 #include <ctime>
 #include <vector>
