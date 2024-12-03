@@ -6,7 +6,7 @@ bool ClassicEvolution::evolve(Cell* cell, int liveNeighbors) const  {
         return false;
     }
 
-    if (cell->isAlive()) {
+    if (cell) { //TODO: ADJUST THIS CONDITION
         // Classic Game of Life rules:
         // A cell remains alive if it has 2 or 3 live neighbors.
         return (liveNeighbors == 2 || liveNeighbors == 3);
@@ -15,3 +15,5 @@ bool ClassicEvolution::evolve(Cell* cell, int liveNeighbors) const  {
         return (liveNeighbors == 3);
     }
 }
+
+ClassicEvolution::ClassicEvolution() {}

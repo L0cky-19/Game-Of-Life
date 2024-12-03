@@ -4,6 +4,8 @@
 #include <ctime>
 #include <vector>
 
+using namespace std;
+
 void Grid::initGrid(int width, int height) {
     cells = vector<vector<Cell>>(height, vector<Cell>(width, Cell(TypeCell::Dead)));
 }

@@ -6,7 +6,7 @@ bool HighLifeEvolution::evolve(Cell* cell, int liveNeighbors) const {
         return false;
     }
 
-    if (cell->isAlive()) {
+    if (cell) { //TODO: adjust condition
         // HighLife rules for live cells:
         // A cell remains alive if it has 2 or 3 live neighbors.
         return (liveNeighbors == 2 || liveNeighbors == 3);
@@ -15,4 +15,9 @@ bool HighLifeEvolution::evolve(Cell* cell, int liveNeighbors) const {
         // A dead cell becomes alive if it has exactly 3 or 6 live neighbors.
         return (liveNeighbors == 3 || liveNeighbors == 6);
     }
+}
+
+
+HighLifeEvolution::HighLifeEvolution() {
+
 }

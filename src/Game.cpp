@@ -3,8 +3,8 @@
 #include "../include/Game.hpp"
 #include "./game-state/PauseState.cpp"
 #include "./game-state/PlayState.cpp"
-#include "./evolution-strategy/ClassicEvolution.cpp"
 #include "./evolution-strategy/HighLifeEvolution.cpp"
+#include "./evolution-strategy/ClassicEvolution.cpp"
 #include "./renderer/ConsoleRenderer.cpp"
 #include "./renderer/GraphicRenderer.cpp"
 #include <limits>
@@ -155,3 +155,5 @@ void Game::setIterationDelay(int iterationDelay)
 {
     this->iterationDelay = iterationDelay;
 }
+
+Game::Game() {} //TODO: needed or not?
