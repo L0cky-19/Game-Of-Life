@@ -1,4 +1,4 @@
-#include "include/Cell.hpp"
+#include "../include/Cell.hpp"
 
 Cell::Cell(TypeCell type) : type(type) {}
 

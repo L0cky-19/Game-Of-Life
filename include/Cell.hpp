@@ -11,7 +11,7 @@ private:
     TypeCell type;
 
 public:
-    Cell(TypeCell type) : type(type) {}
-    TypeCell getType() const { return type; }
-    void setType(TypeCell newType) { type = newType; }
+    Cell(TypeCell type);
+    TypeCell getType() const;
+    void setType(TypeCell newType);
 };

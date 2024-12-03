@@ -21,7 +21,7 @@ public:
     void initCells(const std::vector<std::vector<int>>& tab);
     void initCellsRandom();
 
-    std::vector<std::vector<int>> calculateNextGen(IEvolutionStrategy* evolutionStrategy);
+    void /*std::vector<std::vector<int>>*/ calculateNextGen(IEvolutionStrategy* evolutionStrategy);
 
     // getters
     int getWidth() const;

@@ -77,7 +77,7 @@ void Grid::applyPattern(const Pattern& pattern, const vector<int>& position){
 }
 */
 
-vector<vector<int>> Grid::calculateNextGen(IEvolutionStrategy* evolutionStrategy){
+/*vector<vector<int>> */ void Grid::calculateNextGen(IEvolutionStrategy* evolutionStrategy){
     vector<vector<int>> tab(height, vector<int>(width, 0));
     int neighbors = 0;
     if (isToroidal == false){
@@ -102,6 +102,7 @@ vector<vector<int>> Grid::calculateNextGen(IEvolutionStrategy* evolutionStrategy
 
 void Grid::update(IEvolutionStrategy* evolutionStrategy) {
     vector<vector<int>> tab;
+    /*
     tab = calculateNextGen(evolutionStrategy);
     for (int i = 0;i< height; i++){
         for (int y = 0;y< width; y++){
@@ -112,7 +113,7 @@ void Grid::update(IEvolutionStrategy* evolutionStrategy) {
                 cells[i][y].setType(TypeCell::Alive);
             }
         }
-    }
+    }*/
 }
 
 

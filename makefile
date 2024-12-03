@@ -10,8 +10,16 @@ INCLUDE_DIR = include
 
 # Fichiers source
 SRCS = $(SRC_DIR)/main.cpp \
+       $(SRC_DIR)/Game.cpp \
+       $(SRC_DIR)/Grid.cpp \
+       $(SRC_DIR)/Cell.cpp \
+       $(SRC_DIR)/renderer/ConsoleRenderer.cpp \
        $(SRC_DIR)/renderer/GraphicRenderer.cpp \
-       $(SRC_DIR)/renderer/ConsoleRenderer.cpp
+       $(SRC_DIR)/evolution-strategy/ClassicEvolution.cpp \
+       $(SRC_DIR)/evolution-strategy/HighLifeEvolution.cpp \
+       $(SRC_DIR)/file-handler/FileHandler.cpp \
+       $(SRC_DIR)/game-state/PlayState.cpp \
+       $(SRC_DIR)/game-state/PauseState.cpp \
 
 # Génération des chemins des fichiers objets dans build/
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
