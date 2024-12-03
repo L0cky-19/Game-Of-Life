@@ -2,6 +2,7 @@
 #include "Cell.cpp"
 #include <cstdlib>
 #include <ctime>
+#include <vector>
 
 void Grid::initGrid(int width, int height) {
     cells = vector<vector<Cell>>(height, vector<Cell>(width, Cell(TypeCell::Dead)));

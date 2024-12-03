@@ -1,12 +1,12 @@
 #include <iostream>
 
 #include "../include/Game.hpp"
-#include "include/game-state/PauseState.hpp"
-#include "include/game-state/PlayState.hpp"
-#include "include/evolution-strategy/ClassicEvolution.hpp"
-#include "include/evolution-strategy/HighLifeEvolution.hpp"
-#include "include/renderer/ConsoleRenderer.hpp"
-#include "include/renderer/GraphicRenderer.hpp"
+#include "./game-state/PauseState.cpp"
+#include "./game-state/PlayState.cpp"
+#include "./evolution-strategy/ClassicEvolution.cpp"
+#include "./evolution-strategy/HighLifeEvolution.cpp"
+#include "./renderer/ConsoleRenderer.cpp"
+#include "./renderer/GraphicRenderer.cpp"
 #include <limits>
 
 using namespace std;
