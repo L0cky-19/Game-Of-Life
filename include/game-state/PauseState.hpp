@@ -1,5 +1,4 @@
 #pragma once
-#include "GameState.hpp"
 #include "PlayState.hpp" // Include PlayState since we transition to it
 
 // Derived class representing the Pause state
