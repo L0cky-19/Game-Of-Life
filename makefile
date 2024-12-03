@@ -33,9 +33,17 @@ all: create_dirs $(TARGET)
 	$(TARGET)
 
 # Création des répertoires nécessaires
+BUILD_DIRS = $(BUILD_DIR) \
+             $(BUILD_DIR)/renderer \
+             $(BUILD_DIR)/game-state \
+             $(BUILD_DIR)/evolution-strategy
+
 create_dirs:
-	@if not exist $(BUILD_DIR) mkdir $(BUILD_DIR)
-	@if not exist $(BUILD_DIR)\renderer mkdir $(BUILD_DIR)\renderer
+	@if not exist "$(BUILD_DIR)" mkdir "$(BUILD_DIR)"
+	@if not exist "$(BUILD_DIR)\renderer" mkdir "$(BUILD_DIR)\renderer"
+	@if not exist "$(BUILD_DIR)\game-state" mkdir "$(BUILD_DIR)\game-state"
+	@if not exist "$(BUILD_DIR)\evolution-strategy" mkdir "$(BUILD_DIR)\evolution-strategy"
+	@if not exist "$(BUILD_DIR)\file-handler" mkdir "$(BUILD_DIR)\file-handler"
 
 # Création de l'exécutable
 $(TARGET): $(OBJS)
