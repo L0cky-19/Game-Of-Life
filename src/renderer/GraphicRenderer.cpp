@@ -1,7 +1,7 @@
 #include "../../include/renderer/GraphicRenderer.hpp"
-#include "../../tests/renderer/mocks/MockGrid.hpp"
+#include "../../include/Grid.hpp"
 
-GraphicRenderer::GraphicRenderer() 
+GraphicRenderer::GraphicRenderer()
     : window(sf::VideoMode(800, 600), "Game of Life") {
     window.setFramerateLimit(60);
 }
@@ -17,7 +17,7 @@ void GraphicRenderer::render(Grid* grid) {
 
     if (grid) {
         const int cellSize = 20;
-        
+
         // Dessiner juste la grille pour l'instant
         for (int x = 0; x <= grid->getWidth(); x++) {
             sf::RectangleShape line(sf::Vector2f(1, cellSize * grid->getHeight()));
@@ -36,5 +36,3 @@ void GraphicRenderer::render(Grid* grid) {
 
     window.display();
 }
-
-

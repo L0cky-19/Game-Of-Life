@@ -9,9 +9,17 @@ SRC_DIR = src
 INCLUDE_DIR = include
 
 # Fichiers source
-SRCS = $(SRC_DIR)/main_test_graphic.cpp \
+SRCS = $(SRC_DIR)/main.cpp \
+       $(SRC_DIR)/Game.cpp \
+       $(SRC_DIR)/Grid.cpp \
+       $(SRC_DIR)/Cell.cpp \
+       $(SRC_DIR)/renderer/ConsoleRenderer.cpp \
        $(SRC_DIR)/renderer/GraphicRenderer.cpp \
-       $(SRC_DIR)/renderer/ConsoleRenderer.cpp
+       $(SRC_DIR)/evolution-strategy/ClassicEvolution.cpp \
+       $(SRC_DIR)/evolution-strategy/HighLifeEvolution.cpp \
+       $(SRC_DIR)/game-state/PlayState.cpp \
+       $(SRC_DIR)/game-state/PauseState.cpp \
+       # TODO: $(SRC_DIR)/file-handler/FileHandler.cpp \/
 
 # Génération des chemins des fichiers objets dans build/
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
@@ -25,9 +33,17 @@ all: create_dirs $(TARGET)
 	$(TARGET)
 
 # Création des répertoires nécessaires
+BUILD_DIRS = $(BUILD_DIR) \
+             $(BUILD_DIR)/renderer \
+             $(BUILD_DIR)/game-state \
+             $(BUILD_DIR)/evolution-strategy
+
 create_dirs:
-	@if not exist $(BUILD_DIR) mkdir $(BUILD_DIR)
-	@if not exist $(BUILD_DIR)\renderer mkdir $(BUILD_DIR)\renderer
+	@if not exist "$(BUILD_DIR)" mkdir "$(BUILD_DIR)"
+	@if not exist "$(BUILD_DIR)\renderer" mkdir "$(BUILD_DIR)\renderer"
+	@if not exist "$(BUILD_DIR)\game-state" mkdir "$(BUILD_DIR)\game-state"
+	@if not exist "$(BUILD_DIR)\evolution-strategy" mkdir "$(BUILD_DIR)\evolution-strategy"
+	@if not exist "$(BUILD_DIR)\file-handler" mkdir "$(BUILD_DIR)\file-handler"
 
 # Création de l'exécutable
 $(TARGET): $(OBJS)

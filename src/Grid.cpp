@@ -1,7 +1,10 @@
 #include "../include/Grid.hpp"
-#include "Cell.cpp"
+#include "../include/Cell.hpp"
 #include <cstdlib>
 #include <ctime>
+#include <vector>
+
+using namespace std;
 
 void Grid::initGrid(int width, int height) {
     cells = vector<vector<Cell>>(height, vector<Cell>(width, Cell(TypeCell::Dead)));
@@ -74,7 +77,7 @@ void Grid::applyPattern(const Pattern& pattern, const vector<int>& position){
 }
 */
 
-vector<vector<int>> Grid::calculateNextGeneration(IEvolutionStrategy* evolutionStrategy){
+/*vector<vector<int>> */ void Grid::calculateNextGen(IEvolutionStrategy* evolutionStrategy){
     vector<vector<int>> tab(height, vector<int>(width, 0));
     int neighbors = 0;
     if (isToroidal == false){
@@ -99,7 +102,8 @@ vector<vector<int>> Grid::calculateNextGeneration(IEvolutionStrategy* evolutionS
 
 void Grid::update(IEvolutionStrategy* evolutionStrategy) {
     vector<vector<int>> tab;
-    tab = calculateNextGeneration(evolutionStrategy);
+    /*
+    tab = calculateNextGen(evolutionStrategy);
     for (int i = 0;i< height; i++){
         for (int y = 0;y< width; y++){
             if ( tab[i][y] == 0 && cells[i][y].getType() != TypeCell::Dead){
@@ -109,5 +113,14 @@ void Grid::update(IEvolutionStrategy* evolutionStrategy) {
                 cells[i][y].setType(TypeCell::Alive);
             }
         }
-    }
+    }*/
+}
+
+
+int Grid::getWidth() const {
+    return width;
+}
+
+int Grid::getHeight() const {
+    return height;
 }

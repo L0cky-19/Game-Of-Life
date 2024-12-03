@@ -1,7 +1,9 @@
 #pragma once
-#include "GameState.hpp"
+#include "PlayState.hpp" // Include PlayState since we transition to it
 
-//TODO: inherit public or private?
+// Derived class representing the Pause state
 class PauseState : public GameState {
-    GameState override update();
-}
+public:
+    // Override the update function to transition to PlayState
+    std::unique_ptr<GameState> update() override;
+};
