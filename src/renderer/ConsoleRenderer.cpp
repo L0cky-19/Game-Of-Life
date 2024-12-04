@@ -6,12 +6,11 @@ void ConsoleRenderer::update(Subject* subject) {
 }
 
 void ConsoleRenderer::render(Grid* grid) {
+
+    system("cls"); //FIXME: detect os ? wont work for macos
+
     if (!grid) return;
 
-    cout << "grid info";
-    //grid->printCells();
-    // Afficher la grille
-    /*
     const auto& cells = grid->getCells();
     for (int y = 0; y < grid->getHeight(); y++) {
         for (int x = 0; x < grid->getWidth(); x++) {
@@ -24,7 +23,6 @@ void ConsoleRenderer::render(Grid* grid) {
         std::cout << std::endl;
     }
     std::cout << std::endl;
-    */
 }
 
 string ConsoleRenderer::getName() const  {

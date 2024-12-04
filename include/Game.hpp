@@ -48,7 +48,7 @@ public:
     void inputEvolutionStrategy();
     void inputRenderer();
     void inputIterationDelay();
-    void displaySettings(string filename, Grid grid);//todo: takes in the settings that are not attached to games, maybe ask a question to Alexis about this?
+    void displaySettings(string filename, Grid* grid);//todo: takes in the settings that are not attached to games, maybe ask a question to Alexis about this?
 
 //getters
     IRenderer* getRenderer() const;

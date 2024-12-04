@@ -1,9 +1,19 @@
 #include "../../include/renderer/GraphicRenderer.hpp"
 #include "../../include/Grid.hpp"
+#include <iostream>
 
 GraphicRenderer::GraphicRenderer()
-    : window(sf::VideoMode(800, 600), "Game of Life") {
+    : window(sf::VideoMode(800, 600), "Game of Life"), waitingForInput(false) {
     window.setFramerateLimit(60);
+
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
+        std::cout << "Erreur de chargement de la police" << std::endl;
+    }
+
+    inputText.setFont(font);
+    inputText.setCharacterSize(20);
+    inputText.setFillColor(sf::Color::Black);
+    inputText.setPosition(50, 500);
 }
 
 void GraphicRenderer::update(Subject* subject) {
@@ -13,24 +23,27 @@ void GraphicRenderer::update(Subject* subject) {
 }
 
 void GraphicRenderer::render(Grid* grid) {
-    window.clear(sf::Color::White);
+    if (!grid) return;  // Protection contre les pointeurs nuls
 
-    if (grid) {
-        const int cellSize = 20;
+    window.clear(sf::Color::White);  // Fond blanc
+    const int cellSize = 20;
 
-        // Dessiner juste la grille pour l'instant
-        for (int x = 0; x <= grid->getWidth(); x++) {
-            sf::RectangleShape line(sf::Vector2f(1, cellSize * grid->getHeight()));
-            line.setPosition(x * cellSize, 0);
-            line.setFillColor(sf::Color::Black);
-            window.draw(line);
-        }
+    const auto& cells = grid->getCells();
+    for (int y = 0; y < grid->getHeight(); y++) {
+        for (int x = 0; x < grid->getWidth(); x++) {
+            sf::RectangleShape cell(sf::Vector2f(cellSize - 1, cellSize - 1));
+            cell.setPosition(x * cellSize, y * cellSize);
 
-        for (int y = 0; y <= grid->getHeight(); y++) {
-            sf::RectangleShape line(sf::Vector2f(cellSize * grid->getWidth(), 1));
-            line.setPosition(0, y * cellSize);
-            line.setFillColor(sf::Color::Black);
-            window.draw(line);
+            // Définir la couleur en fonction du type de cellule
+            if (cells[y][x].getType() == TypeCell::Alive) {
+                cell.setFillColor(sf::Color::Black);
+            } else {
+                cell.setFillColor(sf::Color::White);
+            }
+
+            cell.setOutlineColor(sf::Color(128, 128, 128));
+            cell.setOutlineThickness(1);
+            window.draw(cell);
         }
     }
 

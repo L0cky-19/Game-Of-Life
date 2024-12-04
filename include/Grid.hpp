@@ -30,6 +30,6 @@ public:
     bool getIsToroidal() const;
 
     const std::vector<std::vector<Cell>>& getCells() const { return cells; }
-
+     int countLiveNeighbors(int x, int y);
     void printCells() const;
 };

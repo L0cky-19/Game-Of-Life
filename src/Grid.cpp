@@ -31,46 +31,12 @@ void Grid::initCells(const std::vector<std::vector<int>> &tab) { //FIXME: si on 
 
 void Grid::initCellsRandom()
 {
-    srand(time(nullptr));
-    int maxObstacles = width;
-    int obstacleCount = 0;
     std::vector<std::vector<Cell>> newCells = {};
-
-    for (int i = 0; i < height; ++i)
-    {
+    srand(time(nullptr));
+    for (int y = 0; y < height; y++) {
         std::vector<Cell> newRow = {};
-        for (int y = 0; y < width; ++y)
-        {
-            if (obstacleCount < maxObstacles)
-            {
-                int randomValue = rand() % 3;
-
-                if (randomValue == 0)
-                {
-                    newRow.push_back(Cell(TypeCell::Dead));
-                }
-                else if (randomValue == 1)
-                {
-                    newRow.push_back(Cell(TypeCell::Alive));
-                }
-                else
-                {
-                    newRow.push_back(Cell(TypeCell::Obstacle));
-                    obstacleCount++;
-                }
-            }
-            else
-            {
-                int randomValue = std::rand() % 2;
-                if (randomValue == 0)
-                {
-                    newRow.push_back(Cell(TypeCell::Dead));
-                }
-                else
-                {
-                    newRow.push_back(Cell(TypeCell::Alive));
-                }
-            }
+        for (int x = 0; x < width; x++) {
+           newRow.push_back(rand() % 2 == 0 ? TypeCell::Dead : TypeCell::Alive);
         }
         newCells.push_back(newRow);
     }
@@ -100,38 +66,50 @@ void Grid::applyPattern(const Pattern& pattern, const vector<int>& position){
     }
 }
 */
-
-/*vector<vector<int>> */ void Grid::calculateNextGen(IEvolutionStrategy *evolutionStrategy)
+int Grid::countLiveNeighbors(int x, int y)
 {
-    vector<vector<int>> tab(height, vector<int>(width, 0));
-    int neighbors = 0;
-    if (isToroidal == false)
-    {
-        for (int i = 0; i < height; i++)
-        {
-            for (int y = 0; y < width; y++)
-            {
-                neighbors = 0;
-                if (i == 0 || y == 0)
-                {
-                    for (int a = 0; a <= 1; a++)
-                    {
-                        for (int b = 0; b <= 1; b++)
-                        {
-                            if (a == 0 && b == 0)
-                                continue;
-                            if (cells[i + a][b].getType() == TypeCell::Alive)
-                            {
-                                ++neighbors;
-                            }
-                        }
-                    }
-                }
+    int count = 0;
+    for (int dy = -1; dy <= 1; dy++) {
+        for (int dx = -1; dx <= 1; dx++) {
+            if (dx == 0 && dy == 0) continue;
+
+            int nx = x + dx;
+            int ny = y + dy;
+
+            if (isToroidal) {
+                nx = (nx + width) % width;
+                ny = (ny + height) % height;
+            } else if (nx < 0 || nx >= width || ny < 0 || ny >= height) {
+                continue;
+            }
+
+            if (cells[ny][nx].getType() == TypeCell::Alive) {
+                count++;
             }
         }
     }
+    return count;
 }
+void Grid::calculateNextGen(IEvolutionStrategy* evolutionStrategy)
+{
+    vector<vector<TypeCell>> nextGen(height, vector<TypeCell>(width, TypeCell::Dead));
 
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            int liveNeighbors = countLiveNeighbors(x, y);
+
+            if (evolutionStrategy->evolve(&cells[y][x], liveNeighbors)) {
+                nextGen[y][x] = TypeCell::Alive;
+            }
+        }
+    }
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            cells[y][x].setType(nextGen[y][x]);
+        }
+    }
+}
 void Grid::update(IEvolutionStrategy *evolutionStrategy)
 {
     vector<vector<int>> tab;
@@ -165,15 +143,11 @@ bool Grid::getIsToroidal() const
 
 
 void Grid::printCells() const {
-    cout << "start" << this->getHeight() << this->getWidth() << "logged";
     auto cells = this->getCells();
-    cout << "2";
     for (int i = 0; i < getHeight(); ++i) // Use getHeight() instead of cells.size()
     {
-        cout << "3";
         for (int j = 0; j < getWidth(); ++j) // Use getWidth() instead of cells[i].size()
         {
-            cout << "4";
             cout << (cells[i][j].getType() == TypeCell::Alive ? "1" : "0");
         }
         cout << endl;
