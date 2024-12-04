@@ -22,14 +22,13 @@ void Game::setup()
     cout << "=== Evolution Simulation Settings ===\n";
 
     string filename = this->inputLoadChoice();
-    GridData gridData = this->inputGridData();
+    GridData gridData = this->inputGridData(); //FIXME: demander que la grid data quand filename.empty()
     this->inputRenderer();
     this->inputEvolutionStrategy();
     this->inputIterationDelay();
 
     this->displaySettings(filename, gridData);
 
-    cout << "here";
     FileHandler* filehandler = new FileHandler();
     this->setFileHandler(filehandler); // needed ?
 
@@ -67,11 +66,10 @@ void Game::displaySettings(string filename, GridData gridData)
 void Game::run()
 {
     /*
+    bool gameIsRunning = true;
     while (gameIsRunning) {
         grid->calculateNextGen(); //TODO: rename to nextIteration that encapsulates the other logic
-    }
-    */
-
+    }*/
 }
 
 

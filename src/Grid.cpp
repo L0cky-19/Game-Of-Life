@@ -16,22 +16,22 @@ void Grid::initGrid(int width, int height)
     cells = vector<vector<Cell>>(height, vector<Cell>(width, Cell(TypeCell::Dead)));
 }
 
-void Grid::initCells(const vector<vector<int>> &tab)
-{
-    for (int i = 0; i < height; i++)
-    {
-        for (int y = 0; y < width; y++)
-        {
-            if (tab[i][y] == 1)
-            {
-                cells[i][y].setType(TypeCell::Alive);
-            }
-            else if (tab[i][y] == 2)
-            {
-                cells[i][y].setType(TypeCell::Obstacle);
+void Grid::initCells(const std::vector<std::vector<int>> &tab) { //FIXME: si on a plus de celules que dites ca va crash
+    std::vector<std::vector<Cell>> newCells = {};
+    for (int i = 0; i < height; i++) {
+        std::vector<Cell> newRow = {};
+        for (int y = 0; y < width; y++) {
+            if (tab[i][y] == 1) {
+                newRow.push_back(Cell(TypeCell::Alive)); // Create a Cell with type Alive
+            } else if (tab[i][y] == 2) {
+                newRow.push_back(Cell(TypeCell::Obstacle)); // Create a Cell with type Alive
+            } else {
+                newRow.push_back(Cell(TypeCell::Dead)); // Create a Cell with type Alive
             }
         }
+        newCells.push_back(newRow);
     }
+    cells = newCells;
 }
 
 void Grid::initCellsRandom()
