@@ -33,24 +33,29 @@ Grid FileHandler::loadGridFromFile(string filename)
     return Grid(cells.size(), cells[0].size(), false);
 }
 
-// void FileHandler::saveGridToFile(Grid *grid)
-// {
-//     ofstream file("grid_save.txt");
-//     if (!file.is_open())
-//     {
-//         throw runtime_error("Could not create file: grid_save.txt");
-//     }
-//     auto cells = grid->getCells();
+void FileHandler::saveGridToFile(Grid *grid)
+{
+    ofstream file("/Users/azuka/Documents/grid_save.txt");
+    if (!file.is_open())
+    {
+        throw runtime_error("Could not create file: grid_save.txt");
+    }
 
-//     for (const auto &row : cells)
-//     {
-//         for (bool cell : row)
-//         {
-//             file << (cell ? '1' : '0');
-//         }
-//         file << '\n';
-//     }
-// }
+    int width = grid->getWidth();   // Assuming Grid has getWidth()
+    int height = grid->getHeight(); // Assuming Grid has getHeight()
+    file << width << " " << height << '\n';
+
+    auto cells = grid->getCells();
+
+    for (const auto &row : cells)
+    {
+        for (const Cell &cell : row)
+        {
+            file << (cell.getType() == TypeCell::Alive ? '1' : '0');
+        }
+        file << '\n';
+    }
+}
 
 // Pattern FileHandler::loadPatternFromFile(string filename)
 // {
