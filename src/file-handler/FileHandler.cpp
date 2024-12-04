@@ -1,27 +1,27 @@
-#include "include/file-handler/FileHandler.hpp"
+#include "../../include/file-handler/FileHandler.hpp"
 
 #include <fstream>
 
 using namespace std;
 
-Grid FileHandler::loadGridFromFile(string filename)
+vector<vector<int>> FileHandler::loadInputFromFile(string filename)
 {
     ifstream file(filename);
     if (!file.is_open())
     {
         throw runtime_error("Could not open file: " + filename);
     }
-    vector<vector<bool>> cells;
+    vector<vector<int>> cells;
     string line;
 
     while (getline(file, line))
     {
-        vector<bool> row;
+        vector<int> row;
         for (char c : line)
         {
             if (c == '1' || c == '0')
             {
-                row.push_back(c == '1');
+                row.push_back(c - '0');
             }
         }
         if (!row.empty())
@@ -30,7 +30,7 @@ Grid FileHandler::loadGridFromFile(string filename)
         }
     }
 
-    return Grid(cells.size(), cells[0].size(), false);
+    return cells;
 }
 
 void FileHandler::saveGridToFile(Grid *grid)

@@ -29,18 +29,23 @@ void Game::setup()
 
     this->displaySettings(filename, gridData);
 
+    cout << "here";
+    FileHandler* filehandler = new FileHandler();
+    this->setFileHandler(filehandler); // needed ?
+
     Grid grid = Grid(gridData.width, gridData.height, gridData.isToroidal);
-    if (fileName.isEmpty()) {
+    if (filename.empty()) {
         grid.initCellsRandom();
     } else {
-        vector<vector<int>> fetchedCells = FileHandler.loadInputFromFile(filename);
+        vector<vector<int>> fetchedCells = filehandler->loadInputFromFile(filename);
         grid.initCells(fetchedCells);
     }
-    this->setGrid(&grid)
+    this->setGrid(&grid);
 
-    // subscribe / attach
-    this->getGrid()->attach(this->getRenderer())
-    this->getGrid()->attach(this->getFileHandler())
+    grid.printCells();
+    // todo: subscribe / attach
+    //this->getGrid()->attach(this->getRenderer());
+    //this->getGrid()->attach(this->getFileHandler());
 }
 
 
@@ -226,13 +231,17 @@ void Game::setGrid(Grid *grid)
     this->grid = grid;
 }
 
-void Game::getGrid()
+Grid* Game::getGrid() const
 {
     return this->grid;
 }
 
 
-void Game::getFileHandler()
+FileHandler* Game::getFileHandler() const
 {
     return this->fileHandler;
+}
+
+void Game::setFileHandler(FileHandler *filehandler) {
+    this->fileHandler = filehandler;
 }

@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
-
+#include <iostream>
 using namespace std;
 
 Grid::Grid(int width, int height, bool isToroidal) : width(width), height(height), isToroidal(isToroidal)
@@ -158,4 +158,16 @@ int Grid::getWidth() const
 int Grid::getHeight() const
 {
     return height;
+}
+
+void Grid::printCells() const {
+    auto cells = this->getCells();
+    for (const auto &row : cells)
+    {
+        for (const auto &cell : row)
+        {
+            cout << (cell.getType() == TypeCell::Alive ? "1" : "0");
+        }
+        cout << endl;
+    }
 }

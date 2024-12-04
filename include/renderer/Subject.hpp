@@ -1,6 +1,7 @@
 #include <memory>
 #include "Observer.hpp"
 #include <vector>
+#pragma once
 
 class Subject { //TODO: export this design pattern
 public:

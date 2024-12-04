@@ -40,6 +40,7 @@ public:
     void setEvolutionStrategy(IEvolutionStrategy *strategy);
     void setIterationDelay(int iterationDelay);
     void setGrid(Grid *grid);
+    void setFileHandler(FileHandler *filehandler);
 
     //todo: maybe export these to a config class?
     string inputLoadChoice(); // returns -1 if new game & text if he loads

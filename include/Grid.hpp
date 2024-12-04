@@ -30,4 +30,6 @@ public:
     int getHeight() const;
 
     const std::vector<std::vector<Cell>>& getCells() const { return cells; }
+
+    void printCells() const;
 };
