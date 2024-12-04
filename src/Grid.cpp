@@ -6,46 +6,71 @@
 
 using namespace std;
 
-void Grid::initGrid(int width, int height) {
+Grid::Grid(int width, int height, bool isToroidal) : width(width), height(height), isToroidal(isToroidal)
+{
+    initGrid(width, height);
+}
+
+void Grid::initGrid(int width, int height)
+{
     cells = vector<vector<Cell>>(height, vector<Cell>(width, Cell(TypeCell::Dead)));
 }
 
-void Grid::initCells(const vector<vector<int>>& tab){
-    for (int i = 0;i< height; i++){
-        for (int y = 0;y< width; y++){
-            if (tab[i][y] == 1){
+void Grid::initCells(const vector<vector<int>> &tab)
+{
+    for (int i = 0; i < height; i++)
+    {
+        for (int y = 0; y < width; y++)
+        {
+            if (tab[i][y] == 1)
+            {
                 cells[i][y].setType(TypeCell::Alive);
             }
-            else if (tab[i][y] == 2){
+            else if (tab[i][y] == 2)
+            {
                 cells[i][y].setType(TypeCell::Obstacle);
             }
         }
     }
 }
 
-void Grid::initCellsRandom() {
+void Grid::initCellsRandom()
+{
     srand(time(nullptr));
     int maxObstacles = width;
     int obstacleCount = 0;
 
-    for (int i = 0; i < height; ++i) {
-        for (int y = 0; y < width; ++y) {
-            if (obstacleCount < maxObstacles) {
+    for (int i = 0; i < height; ++i)
+    {
+        for (int y = 0; y < width; ++y)
+        {
+            if (obstacleCount < maxObstacles)
+            {
                 int randomValue = rand() % 3;
 
-                if (randomValue == 0) {
+                if (randomValue == 0)
+                {
                     cells[i][y].setType(TypeCell::Dead);
-                } else if (randomValue == 1) {
+                }
+                else if (randomValue == 1)
+                {
                     cells[i][y].setType(TypeCell::Alive);
-                } else {
+                }
+                else
+                {
                     cells[i][y].setType(TypeCell::Obstacle);
                     obstacleCount++;
                 }
-            } else {
+            }
+            else
+            {
                 int randomValue = std::rand() % 2;
-                if (randomValue == 0) {
+                if (randomValue == 0)
+                {
                     cells[i][y].setType(TypeCell::Dead);
-                } else {
+                }
+                else
+                {
                     cells[i][y].setType(TypeCell::Alive);
                 }
             }
@@ -77,18 +102,27 @@ void Grid::applyPattern(const Pattern& pattern, const vector<int>& position){
 }
 */
 
-/*vector<vector<int>> */ void Grid::calculateNextGen(IEvolutionStrategy* evolutionStrategy){
+/*vector<vector<int>> */ void Grid::calculateNextGen(IEvolutionStrategy *evolutionStrategy)
+{
     vector<vector<int>> tab(height, vector<int>(width, 0));
     int neighbors = 0;
-    if (isToroidal == false){
-        for (int i=0; i<height;i++){
-            for (int y=0; y<width; y++){
+    if (isToroidal == false)
+    {
+        for (int i = 0; i < height; i++)
+        {
+            for (int y = 0; y < width; y++)
+            {
                 neighbors = 0;
-                if (i == 0 || y == 0){
-                    for (int a=0; a<=1;a++){
-                        for (int b=0; b<=1;b++){
-                            if (a==0 && b == 0) continue;
-                            if ( cells[i+a][b].getType() == TypeCell::Alive ){
+                if (i == 0 || y == 0)
+                {
+                    for (int a = 0; a <= 1; a++)
+                    {
+                        for (int b = 0; b <= 1; b++)
+                        {
+                            if (a == 0 && b == 0)
+                                continue;
+                            if (cells[i + a][b].getType() == TypeCell::Alive)
+                            {
                                 ++neighbors;
                             }
                         }
@@ -97,10 +131,10 @@ void Grid::applyPattern(const Pattern& pattern, const vector<int>& position){
             }
         }
     }
-
 }
 
-void Grid::update(IEvolutionStrategy* evolutionStrategy) {
+void Grid::update(IEvolutionStrategy *evolutionStrategy)
+{
     vector<vector<int>> tab;
     /*
     tab = calculateNextGen(evolutionStrategy);
@@ -116,11 +150,12 @@ void Grid::update(IEvolutionStrategy* evolutionStrategy) {
     }*/
 }
 
-
-int Grid::getWidth() const {
+int Grid::getWidth() const
+{
     return width;
 }
 
-int Grid::getHeight() const {
+int Grid::getHeight() const
+{
     return height;
 }
