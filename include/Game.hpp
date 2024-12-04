@@ -39,6 +39,7 @@ public:
     void setState(GameState *state);
     void setEvolutionStrategy(IEvolutionStrategy *strategy);
     void setIterationDelay(int iterationDelay);
+    void setGrid(Grid *grid);
 
     //todo: maybe export these to a config class?
     string inputLoadChoice(); // returns -1 if new game & text if he loads
@@ -52,4 +53,6 @@ public:
     IRenderer* getRenderer() const;
     IEvolutionStrategy* getEvolutionStrategy() const;
     float getIterationDelay() const;
+    Grid* getGrid() const;
+    FileHandler* getFileHandler() const;
 };

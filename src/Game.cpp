@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 #include "../include/Game.hpp"
 #include "../include/game-state/GameState.hpp"
 #include "../include/game-state/PauseState.hpp"
@@ -7,22 +8,19 @@
 #include "../include/evolution-strategy/ClassicEvolution.hpp"
 #include "../include/renderer/ConsoleRenderer.hpp"
 #include "../include/renderer/GraphicRenderer.hpp"
-#include <limits>
-
 using namespace std;
 
-//TODO: check if Interfaces keep their name if they are not virtual anymore?
-
-/**
- * todo: nb of iterations
- */
-void Game::setup()  //!todo: add class or create game methods to separate this data?
+//TODO: nombre d'iterations?
+//TODO: class config pour simplifier Game? ( game aurait un objet config et config aurait toutes les methodes de config )
+//TODO: stoi au lieu de static cast?
+//TODO: subscriptions? (renderer & filehandler sub a update de la grille?)
+//TODO: init grille et tout dans setup?
+//TODO: for pause use multithreading??? a second thread for the console cin so that if the user gives a pause input. We use an IPC (inter processing ...) and it tells the other thread to stop.
+//TODO: make file handler a subject
+void Game::setup()
 {
-    //this->currentState = new PlayState();
-
     cout << "=== Evolution Simulation Settings ===\n";
 
-    //todo: inconsistent, Config class?
     string filename = this->inputLoadChoice();
     GridData gridData = this->inputGridData();
     this->inputRenderer();
@@ -31,10 +29,20 @@ void Game::setup()  //!todo: add class or create game methods to separate this d
 
     this->displaySettings(filename, gridData);
 
+    Grid grid = Grid(gridData.width, gridData.height, gridData.isToroidal);
+    if (fileName.isEmpty()) {
+        grid.initCellsRandom();
+    } else {
+        vector<vector<int>> fetchedCells = FileHandler.loadInputFromFile(filename);
+        grid.initCells(fetchedCells);
+    }
+    this->setGrid(&grid)
 
-    // Initialize the grid with the specified dimensions and toroidal setting
-    //this->grid = new Grid(gridWidth, gridHeight, toroidal);
-} //TODO: subscriptions & for static_cast float use stoi
+    // subscribe / attach
+    this->getGrid()->attach(this->getRenderer())
+    this->getGrid()->attach(this->getFileHandler())
+}
+
 
 void Game::displaySettings(string filename, GridData gridData)
 {
@@ -42,35 +50,26 @@ void Game::displaySettings(string filename, GridData gridData)
     cout << "Grid Width: " << gridData.width << "\n";
     cout << "Grid Height: " << gridData.height << "\n";
     cout << "Is Toroidal: " << (gridData.isToroidal ? "Yes" : "No") << "\n";
-    //TODO: peut être ajouter pour les strategies une propriété .name?
     cout << "Evolution Strategy: " << this->getEvolutionStrategy()->getName() << "\n";
     cout << "Renderer: " << this->getRenderer()->getName() << "\n";
     cout << "Iteration Delay: " << this->getIterationDelay() << " ms\n";
     cout << "Playing from saved game: " << (filename.empty() ? "No" : "Yes") << "\n";
     if (!filename.empty()) {
-        cout << "Saved Game File: " << filename << "\n"; // Display the filename
+        cout << "Saved Game File: " << filename << "\n";
     }
 }
-
 
 void Game::run()
 {
     /*
-    while (!isGameOver)
-    {
-        grid->calculateNextGen();
-        renderer->update();
-        fileHandler->saveGridToFile(); //TODO: Make fileHandler subscribe to the update() event also?? Rename to notify maybe?
+    while (gameIsRunning) {
+        grid->calculateNextGen(); //TODO: rename to nextIteration that encapsulates the other logic
+    }
+    */
 
-        if (isPaused)
-        {
-            waitForResume(); // ? wait for user resumning the game
-        }
-    }*/
 }
 
-//TODO: for pause use multithreading??? a second thread for the console cin so that if the user gives a pause input. We use an IPC (inter processing ...) and it tells the other thread to stop.
-//TODO: l'implémenter a la fin
+
 void Game::pause() //TODO: pas logique d'avoir ces deux fonctions qui font la meme chose.
 {
     currentState->update();
@@ -220,4 +219,20 @@ IEvolutionStrategy* Game::getEvolutionStrategy() const {
 
 float Game::getIterationDelay() const { //TODO: int
     return this->iterationDelay;
+}
+
+void Game::setGrid(Grid *grid)
+{
+    this->grid = grid;
+}
+
+void Game::getGrid()
+{
+    return this->grid;
+}
+
+
+void Game::getFileHandler()
+{
+    return this->fileHandler;
 }
