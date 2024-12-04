@@ -1,5 +1,7 @@
 #include "include/file-handler/FileHandler.hpp"
 
+#include <fstream>
+
 using namespace std;
 
 Grid FileHandler::loadGridFromFile(string filename)
@@ -17,39 +19,45 @@ Grid FileHandler::loadGridFromFile(string filename)
         vector<bool> row;
         for (char c : line)
         {
-            row.push_back(c == '1');
+            if (c == '1' || c == '0')
+            {
+                row.push_back(c == '1');
+            }
         }
-        cells.push_back(row);
-    }
-
-    return Grid(cells);
-}
-
-void FileHandler::saveGridToFile(Grid *grid)
-{
-    ofstream file("grid_save.txt");
-    if (!file.is_open())
-    {
-        throw runtime_error("Could not create file: grid_save.txt");
-    }
-    auto cells = grid->getCells();
-
-    for (const auto &row : cells)
-    {
-        for (bool cell : row)
+        if (!row.empty())
         {
-            file << (cell ? '1' : '0');
+            cells.push_back(row);
         }
-        file << '\n';
     }
+
+    return Grid(cells.size(), cells[0].size(), false);
 }
 
-Pattern FileHandler::loadPatternFromFile(string filename)
-{
-    return Pattern();
-}
+// void FileHandler::saveGridToFile(Grid *grid)
+// {
+//     ofstream file("grid_save.txt");
+//     if (!file.is_open())
+//     {
+//         throw runtime_error("Could not create file: grid_save.txt");
+//     }
+//     auto cells = grid->getCells();
 
-void FileHandler::savePatternToFile(Pattern pattern, string filename)
-{
-    // TODO: implement
-}
+//     for (const auto &row : cells)
+//     {
+//         for (bool cell : row)
+//         {
+//             file << (cell ? '1' : '0');
+//         }
+//         file << '\n';
+//     }
+// }
+
+// Pattern FileHandler::loadPatternFromFile(string filename)
+// {
+//     return Pattern();
+// }
+
+// void FileHandler::savePatternToFile(Pattern pattern, string filename)
+// {
+//     // TODO: implement
+// }
