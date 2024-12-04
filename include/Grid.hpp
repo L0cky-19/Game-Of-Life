@@ -28,6 +28,7 @@ public:
     // getters
     int getWidth() const;
     int getHeight() const;
+    bool getIsToroidal() const;
 
     const std::vector<std::vector<Cell>>& getCells() const { return cells; }
 

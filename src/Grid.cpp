@@ -159,14 +159,23 @@ int Grid::getHeight() const
 {
     return height;
 }
+bool Grid::getIsToroidal() const
+{
+    return isToroidal;
+}
+
 
 void Grid::printCells() const {
+    cout << "start" << this->getHeight() << this->getWidth() << "logged";
     auto cells = this->getCells();
-    for (const auto &row : cells)
+    cout << "2";
+    for (int i = 0; i < getHeight(); ++i) // Use getHeight() instead of cells.size()
     {
-        for (const auto &cell : row)
+        cout << "3";
+        for (int j = 0; j < getWidth(); ++j) // Use getWidth() instead of cells[i].size()
         {
-            cout << (cell.getType() == TypeCell::Alive ? "1" : "0");
+            cout << "4";
+            cout << (cells[i][j].getType() == TypeCell::Alive ? "1" : "0");
         }
         cout << endl;
     }

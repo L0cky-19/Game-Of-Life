@@ -1,5 +1,8 @@
 #include <iostream>
 #include <limits>
+#include <chrono>
+#include <thread>
+#include <typeinfo>
 #include "../include/Game.hpp"
 #include "../include/game-state/GameState.hpp"
 #include "../include/game-state/PauseState.hpp"
@@ -27,7 +30,6 @@ void Game::setup()
     this->inputEvolutionStrategy();
     this->inputIterationDelay();
 
-    this->displaySettings(filename, gridData);
 
     FileHandler* filehandler = new FileHandler();
     this->setFileHandler(filehandler); // needed ?
@@ -41,19 +43,19 @@ void Game::setup()
     }
     this->setGrid(&grid);
 
+    this->displaySettings(filename, grid);
     grid.printCells();
     // todo: subscribe / attach
     //this->getGrid()->attach(this->getRenderer());
     //this->getGrid()->attach(this->getFileHandler());
 }
 
-
-void Game::displaySettings(string filename, GridData gridData)
+void Game::displaySettings(string filename, Grid grid)
 {
     cout << "\n=== Settings Summary ===\n";
-    cout << "Grid Width: " << gridData.width << "\n";
-    cout << "Grid Height: " << gridData.height << "\n";
-    cout << "Is Toroidal: " << (gridData.isToroidal ? "Yes" : "No") << "\n";
+    cout << "Grid Width: " << grid.getWidth() << "\n";
+    cout << "Grid Height: " << grid.getHeight() << "\n";
+    cout << "Is Toroidal: " << (grid.getIsToroidal() ? "Yes" : "No") << "\n";
     cout << "Evolution Strategy: " << this->getEvolutionStrategy()->getName() << "\n";
     cout << "Renderer: " << this->getRenderer()->getName() << "\n";
     cout << "Iteration Delay: " << this->getIterationDelay() << " ms\n";
@@ -61,15 +63,22 @@ void Game::displaySettings(string filename, GridData gridData)
     if (!filename.empty()) {
         cout << "Saved Game File: " << filename << "\n";
     }
+    cout << "Fetched grid: ";
+    grid.printCells();
 }
 
 void Game::run()
 {
-    /*
     bool gameIsRunning = true;
+    int counter = 0;
     while (gameIsRunning) {
-        grid->calculateNextGen(); //TODO: rename to nextIteration that encapsulates the other logic
-    }*/
+        counter++;
+        cout << "counter" <<counter;
+        grid->printCells();
+        this->getRenderer()->render(this->getGrid());
+        //grid->calculateNextGen(); //TODO: rename to nextIteration that encapsulates the other logic
+        std::this_thread::sleep_for(std::chrono::milliseconds(/*TODO:static_cast<int>(this->getIterationDelay()))*/5000));
+    }
 }
 
 
@@ -229,9 +238,9 @@ void Game::setGrid(Grid *grid)
     this->grid = grid;
 }
 
-Grid* Game::getGrid() const
+Grid Game::getGrid() const
 {
-    return this->grid;
+    return grid;
 }
 
 
