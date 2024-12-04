@@ -23,31 +23,29 @@ void GraphicRenderer::update(Subject* subject) {
 }
 
 void GraphicRenderer::render(Grid* grid) {
-    if (!grid) return;  // Protection contre les pointeurs nuls
+    if (!grid) return;  // Protection against null pointers
+    window.clear(sf::Color::White);  // Clear the window
 
-    window.clear(sf::Color::White);  // Fond blanc
+    sf::Event event;
+    while (window.pollEvent(event)) {
+        if (event.type == sf::Event::Closed) {
+            window.close(); // Close the window if the close event is triggered
+        }
+    }
+
     const int cellSize = 20;
-
     const auto& cells = grid->getCells();
     for (int y = 0; y < grid->getHeight(); y++) {
         for (int x = 0; x < grid->getWidth(); x++) {
             sf::RectangleShape cell(sf::Vector2f(cellSize - 1, cellSize - 1));
             cell.setPosition(x * cellSize, y * cellSize);
-
-            // Définir la couleur en fonction du type de cellule
-            if (cells[y][x].getType() == TypeCell::Alive) {
-                cell.setFillColor(sf::Color::Black);
-            } else {
-                cell.setFillColor(sf::Color::White);
-            }
-
+            cell.setFillColor(cells[y][x].getType() == TypeCell::Alive ? sf::Color::Black : sf::Color::White);
             cell.setOutlineColor(sf::Color(128, 128, 128));
             cell.setOutlineThickness(1);
             window.draw(cell);
         }
     }
-
-    window.display();
+    window.display(); // Display the rendered frame
 }
 
 string GraphicRenderer::getName() const  {
