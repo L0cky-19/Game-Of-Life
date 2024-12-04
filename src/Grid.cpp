@@ -6,15 +6,10 @@
 #include <iostream>
 using namespace std;
 
-Grid::Grid(int width, int height, bool isToroidal) : width(width), height(height), isToroidal(isToroidal)
-{
-    initGrid(width, height);
+Grid::Grid(int width, int height, bool isToroidal) : width(width), height(height), isToroidal(isToroidal) {
+    cout << "new grid created" << width << height << isToroidal;
 }
 
-void Grid::initGrid(int width, int height)
-{
-    cells = vector<vector<Cell>>(height, vector<Cell>(width, Cell(TypeCell::Dead)));
-}
 
 void Grid::initCells(const std::vector<std::vector<int>> &tab) { //FIXME: si on a plus de celules que dites ca va crash
     std::vector<std::vector<Cell>> newCells = {};
@@ -39,9 +34,11 @@ void Grid::initCellsRandom()
     srand(time(nullptr));
     int maxObstacles = width;
     int obstacleCount = 0;
+    std::vector<std::vector<Cell>> newCells = {};
 
     for (int i = 0; i < height; ++i)
     {
+        std::vector<Cell> newRow = {};
         for (int y = 0; y < width; ++y)
         {
             if (obstacleCount < maxObstacles)
@@ -50,15 +47,15 @@ void Grid::initCellsRandom()
 
                 if (randomValue == 0)
                 {
-                    cells[i][y].setType(TypeCell::Dead);
+                    newRow.push_back(Cell(TypeCell::Dead));
                 }
                 else if (randomValue == 1)
                 {
-                    cells[i][y].setType(TypeCell::Alive);
+                    newRow.push_back(Cell(TypeCell::Alive));
                 }
                 else
                 {
-                    cells[i][y].setType(TypeCell::Obstacle);
+                    newRow.push_back(Cell(TypeCell::Obstacle));
                     obstacleCount++;
                 }
             }
@@ -67,15 +64,17 @@ void Grid::initCellsRandom()
                 int randomValue = std::rand() % 2;
                 if (randomValue == 0)
                 {
-                    cells[i][y].setType(TypeCell::Dead);
+                    newRow.push_back(Cell(TypeCell::Dead));
                 }
                 else
                 {
-                    cells[i][y].setType(TypeCell::Alive);
+                    newRow.push_back(Cell(TypeCell::Alive));
                 }
             }
         }
+        newCells.push_back(newRow);
     }
+    cells = newCells;
 }
 
 /*

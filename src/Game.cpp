@@ -30,20 +30,27 @@ void Game::setup()
     this->inputEvolutionStrategy();
     this->inputIterationDelay();
 
-
     FileHandler* filehandler = new FileHandler();
     this->setFileHandler(filehandler); // needed ?
-
     Grid grid = Grid(gridData.width, gridData.height, gridData.isToroidal);
     if (filename.empty()) {
+    cout << "here";
         grid.initCellsRandom();
+    cout << "here after";
     } else {
+
+    cout << "1";
         vector<vector<int>> fetchedCells = filehandler->loadInputFromFile(filename);
+    cout << "2";
         grid.initCells(fetchedCells);
+    cout << "3";
     }
+    cout << "HERE-------------------------------";
     this->setGrid(&grid);
 
+    cout << "HERE-------------------------------";
     this->displaySettings(filename, grid);
+    cout << "HERE-------------------------------";
     grid.printCells();
     // todo: subscribe / attach
     //this->getGrid()->attach(this->getRenderer());
@@ -71,11 +78,17 @@ void Game::run()
 {
     bool gameIsRunning = true;
     int counter = 0;
+    Grid* grid = this->getGrid();
+
+    cout << "Prev info" << endl;
+    cout << "height" << typeid(grid).name();
+    cout << "height" << grid->getHeight();
+
     while (gameIsRunning) {
         counter++;
         cout << "counter" <<counter;
-        grid->printCells();
-        this->getRenderer()->render(this->getGrid());
+
+        this->getRenderer()->render(grid);
         //grid->calculateNextGen(); //TODO: rename to nextIteration that encapsulates the other logic
         std::this_thread::sleep_for(std::chrono::milliseconds(/*TODO:static_cast<int>(this->getIterationDelay()))*/5000));
     }
@@ -238,7 +251,7 @@ void Game::setGrid(Grid *grid)
     this->grid = grid;
 }
 
-Grid Game::getGrid() const
+Grid* Game::getGrid() const
 {
     return grid;
 }

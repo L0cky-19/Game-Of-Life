@@ -14,11 +14,10 @@ private:
     bool isToroidal;
 
 public:
-    Grid(int width, int height, bool isToroidal = false) ; //TODO: use gridData directly?
+    Grid(int width, int height, bool isToroidal) ; //TODO: use gridData directly?
 
     void update(IEvolutionStrategy *evolutionStrategy);
 
-    void initGrid(int width, int height);
 
     void initCells(const std::vector<std::vector<int>>& tab); // TODO: rename to set cells
     void initCellsRandom();

@@ -54,6 +54,6 @@ public:
     IRenderer* getRenderer() const;
     IEvolutionStrategy* getEvolutionStrategy() const;
     float getIterationDelay() const;
-    Grid getGrid() const;
+    Grid* getGrid() const;
     FileHandler* getFileHandler() const;
 };
