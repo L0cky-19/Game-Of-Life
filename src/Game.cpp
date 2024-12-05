@@ -26,7 +26,6 @@ void Game::setup()
 
     string filename = this->inputLoadChoice();
     GridData gridData = this->inputGridData(); //FIXME: demander que la grid data quand filename.empty()
-    this->inputRenderer();
     this->inputEvolutionStrategy();
     this->inputIterationDelay();
 
@@ -45,8 +44,8 @@ void Game::setup()
     }
     this->setGrid(grid);
 
-    this->displaySettings(filename, grid);
-    grid->printCells();
+    //this->displaySettings(filename, grid);
+    this->inputRenderer();
     // todo: subscribe / attach
     //this->getGrid()->attach(this->getRenderer());
     //this->getGrid()->attach(this->getFileHandler());
@@ -73,8 +72,6 @@ void Game::run()
 {
     bool gameIsRunning = true;
     //Grid* grid = this->getGrid();
-    cout << "printed grid" << endl;
-    grid->printCells();
 
     while (gameIsRunning) {
         this->getRenderer()->render(grid);
