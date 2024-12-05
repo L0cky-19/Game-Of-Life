@@ -1,5 +1,5 @@
 #include "../../include/file-handler/FileHandler.hpp"
-
+#include <iostream>
 #include <fstream>
 
 using namespace std;
@@ -11,22 +11,24 @@ vector<vector<int>> FileHandler::loadInputFromFile(string filename)
     {
         throw runtime_error("Could not open file: " + filename);
     }
-    vector<vector<int>> cells;
+
+    int width, height;
+    file >> width >> height;
+    file.ignore();
+
+    vector<vector<int>> cells(height, vector<int>(width));
     string line;
 
-    while (getline(file, line))
+    for (int i = 0; i < height; i++)
     {
-        vector<int> row;
+        getline(file, line);
+        int j = 0;
         for (char c : line)
         {
             if (c == '1' || c == '0')
             {
-                row.push_back(c - '0');
+                cells[i][j++] = c - '0';
             }
-        }
-        if (!row.empty())
-        {
-            cells.push_back(row);
         }
     }
 
@@ -66,3 +68,16 @@ void FileHandler::saveGridToFile(Grid *grid)
 // {
 //     // TODO: implement
 // }
+
+GridDimensions FileHandler::loadDimensions(string filename)
+{
+    ifstream file(filename);
+    if (!file.is_open())
+    {
+        throw runtime_error("Could not open file: " + filename);
+    }
+
+    GridDimensions dims;
+    file >> dims.width >> dims.height;
+    return dims;
+}
