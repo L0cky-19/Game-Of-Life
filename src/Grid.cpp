@@ -3,79 +3,44 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
-
+#include <iostream>
 using namespace std;
 
-Grid::Grid(int width, int height, bool isToroidal) : width(width), height(height), isToroidal(isToroidal)
-{
-    initGrid(width, height);
+Grid::Grid(int width, int height, bool isToroidal) : width(width), height(height), isToroidal(isToroidal) {
+    cout << "new grid created" << width << height << isToroidal;
 }
 
-void Grid::initGrid(int width, int height)
-{
-    cells = vector<vector<Cell>>(height, vector<Cell>(width, Cell(TypeCell::Dead)));
-}
 
-void Grid::initCells(const vector<vector<int>> &tab)
-{
-    for (int i = 0; i < height; i++)
-    {
-        for (int y = 0; y < width; y++)
-        {
-            if (tab[i][y] == 1)
-            {
-                cells[i][y].setType(TypeCell::Alive);
-            }
-            else if (tab[i][y] == 2)
-            {
-                cells[i][y].setType(TypeCell::Obstacle);
+void Grid::initCells(const std::vector<std::vector<int>> &tab) { //FIXME: si on a plus de celules que dites ca va crash
+    std::vector<std::vector<Cell>> newCells = {};
+    for (int i = 0; i < height; i++) {
+        std::vector<Cell> newRow = {};
+        for (int y = 0; y < width; y++) {
+            if (tab[i][y] == 1) {
+                newRow.push_back(Cell(TypeCell::Alive)); // Create a Cell with type Alive
+            } else if (tab[i][y] == 2) {
+                newRow.push_back(Cell(TypeCell::Obstacle)); // Create a Cell with type Alive
+            } else {
+                newRow.push_back(Cell(TypeCell::Dead)); // Create a Cell with type Alive
             }
         }
+        newCells.push_back(newRow);
     }
+    cells = newCells;
 }
 
 void Grid::initCellsRandom()
 {
+    std::vector<std::vector<Cell>> newCells = {};
     srand(time(nullptr));
-    int maxObstacles = width;
-    int obstacleCount = 0;
-
-    for (int i = 0; i < height; ++i)
-    {
-        for (int y = 0; y < width; ++y)
-        {
-            if (obstacleCount < maxObstacles)
-            {
-                int randomValue = rand() % 3;
-
-                if (randomValue == 0)
-                {
-                    cells[i][y].setType(TypeCell::Dead);
-                }
-                else if (randomValue == 1)
-                {
-                    cells[i][y].setType(TypeCell::Alive);
-                }
-                else
-                {
-                    cells[i][y].setType(TypeCell::Obstacle);
-                    obstacleCount++;
-                }
-            }
-            else
-            {
-                int randomValue = std::rand() % 2;
-                if (randomValue == 0)
-                {
-                    cells[i][y].setType(TypeCell::Dead);
-                }
-                else
-                {
-                    cells[i][y].setType(TypeCell::Alive);
-                }
-            }
+    for (int y = 0; y < height; y++) {
+        std::vector<Cell> newRow = {};
+        for (int x = 0; x < width; x++) {
+           newRow.push_back(rand() % 2 == 0 ? TypeCell::Dead : TypeCell::Alive);
         }
+        newCells.push_back(newRow);
     }
+    cells = newCells;
 }
 
 /*
@@ -101,38 +66,50 @@ void Grid::applyPattern(const Pattern& pattern, const vector<int>& position){
     }
 }
 */
-
-/*vector<vector<int>> */ void Grid::calculateNextGen(IEvolutionStrategy *evolutionStrategy)
+int Grid::countLiveNeighbors(int x, int y)
 {
-    vector<vector<int>> tab(height, vector<int>(width, 0));
-    int neighbors = 0;
-    if (isToroidal == false)
-    {
-        for (int i = 0; i < height; i++)
-        {
-            for (int y = 0; y < width; y++)
-            {
-                neighbors = 0;
-                if (i == 0 || y == 0)
-                {
-                    for (int a = 0; a <= 1; a++)
-                    {
-                        for (int b = 0; b <= 1; b++)
-                        {
-                            if (a == 0 && b == 0)
-                                continue;
-                            if (cells[i + a][b].getType() == TypeCell::Alive)
-                            {
-                                ++neighbors;
-                            }
-                        }
-                    }
-                }
+    int count = 0;
+    for (int dy = -1; dy <= 1; dy++) {
+        for (int dx = -1; dx <= 1; dx++) {
+            if (dx == 0 && dy == 0) continue;
+
+            int nx = x + dx;
+            int ny = y + dy;
+
+            if (isToroidal) {
+                nx = (nx + width) % width;
+                ny = (ny + height) % height;
+            } else if (nx < 0 || nx >= width || ny < 0 || ny >= height) {
+                continue;
+            }
+
+            if (cells[ny][nx].getType() == TypeCell::Alive) {
+                count++;
             }
         }
     }
+    return count;
 }
+void Grid::calculateNextGen(IEvolutionStrategy* evolutionStrategy)
+{
+    vector<vector<TypeCell>> nextGen(height, vector<TypeCell>(width, TypeCell::Dead));
 
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            int liveNeighbors = countLiveNeighbors(x, y);
+
+            if (evolutionStrategy->evolve(&cells[y][x], liveNeighbors)) {
+                nextGen[y][x] = TypeCell::Alive;
+            }
+        }
+    }
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            cells[y][x].setType(nextGen[y][x]);
+        }
+    }
+}
 void Grid::update(IEvolutionStrategy *evolutionStrategy)
 {
     vector<vector<int>> tab;
@@ -158,4 +135,21 @@ int Grid::getWidth() const
 int Grid::getHeight() const
 {
     return height;
+}
+bool Grid::getIsToroidal() const
+{
+    return isToroidal;
+}
+
+
+void Grid::printCells() const {
+    auto cells = this->getCells();
+    for (int i = 0; i < getHeight(); ++i) // Use getHeight() instead of cells.size()
+    {
+        for (int j = 0; j < getWidth(); ++j) // Use getWidth() instead of cells[i].size()
+        {
+            cout << (cells[i][j].getType() == TypeCell::Alive ? "1" : "0");
+        }
+        cout << endl;
+    }
 }

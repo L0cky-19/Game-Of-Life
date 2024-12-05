@@ -14,13 +14,12 @@ private:
     bool isToroidal;
 
 public:
-    Grid(int width, int height, bool isToroidal = false);
+    Grid(int width, int height, bool isToroidal) ; //TODO: use gridData directly?
 
     void update(IEvolutionStrategy *evolutionStrategy);
 
-    void initGrid(int width, int height);
 
-    void initCells(const std::vector<std::vector<int>> &tab);
+    void initCells(const std::vector<std::vector<int>>& tab); // TODO: rename to set cells
     void initCellsRandom();
 
     void /*std::vector<std::vector<int>>*/ calculateNextGen(IEvolutionStrategy *evolutionStrategy);
@@ -28,6 +27,9 @@ public:
     // getters
     int getWidth() const;
     int getHeight() const;
+    bool getIsToroidal() const;
 
     const std::vector<std::vector<Cell>>& getCells() const { return cells; }
+     int countLiveNeighbors(int x, int y);
+    void printCells() const;
 };

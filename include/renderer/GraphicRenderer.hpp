@@ -7,6 +7,12 @@ using namespace std;
 class GraphicRenderer : public IRenderer {
 private:
     sf::RenderWindow window;
+    sf::Font font;
+    std::vector<sf::Text> configTexts;
+    sf::Text inputText;
+    std::string currentInput;
+    bool waitingForInput;
+
 public:
     GraphicRenderer();
     virtual ~GraphicRenderer() = default;

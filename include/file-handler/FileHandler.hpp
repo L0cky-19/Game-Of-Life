@@ -8,7 +8,7 @@ using namespace std;
 class FileHandler
 {
 public:
-    Grid loadGridFromFile(string filename);
+    vector<vector<int>> loadInputFromFile(string filename);
     void saveGridToFile(Grid *grid);
 
     /*
