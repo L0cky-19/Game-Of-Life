@@ -22,7 +22,7 @@ public:
     void initCells(const std::vector<std::vector<int>>& tab); // TODO: rename to set cells
     void initCellsRandom();
 
-    void /*std::vector<std::vector<int>>*/ calculateNextGen(IEvolutionStrategy *evolutionStrategy);
+    bool /*std::vector<std::vector<int>>*/ calculateNextGen(IEvolutionStrategy *evolutionStrategy);
 
     // getters
     int getWidth() const;
@@ -30,6 +30,7 @@ public:
     bool getIsToroidal() const;
 
     const std::vector<std::vector<Cell>>& getCells() const { return cells; }
-     int countLiveNeighbors(int x, int y);
+    int countLiveNeighbors(int x, int y);
     void printCells() const;
+    bool isGridStable(const std::vector<std::vector<TypeCell>>& nextGen) const;
 };
