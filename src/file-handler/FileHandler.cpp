@@ -1,5 +1,5 @@
 #include "../../include/file-handler/FileHandler.hpp"
-
+#include <iostream>
 #include <fstream>
 
 using namespace std;
@@ -35,10 +35,14 @@ vector<vector<int>> FileHandler::loadInputFromFile(string filename)
 
 void FileHandler::saveGridToFile(Grid *grid)
 {
-    ofstream file("/Users/azuka/Documents/grid_save.txt");
+    ofstream file("assets/saveGridToFile/updateGrid.txt");
     if (!file.is_open())
     {
-        throw runtime_error("Could not create file: grid_save.txt");
+        throw runtime_error("Could not saved file: updateGrid.txt");
+    }
+    else
+    {
+        std::cout << "File saved successfully" << std::endl;
     }
 
     int width = grid->getWidth();   // Assuming Grid has getWidth()
