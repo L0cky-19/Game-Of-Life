@@ -80,6 +80,7 @@ void Game::run()
         if (iterationCounter > maxIterations) gameIsRunning = false;
         this->getRenderer()->render(grid);
         grid->calculateNextGen(evolutionStrategy); //TODO: rename to nextIteration that encapsulates the other logic
+        this->getFileHandler()->saveGridToFile(grid);
         std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(this->getIterationDelay())));
     }
 
