@@ -57,7 +57,7 @@ void FileHandler::saveGridToFile(Grid *grid)
     {
         for (const Cell &cell : row)
         {
-            file << (cell.getType() == TypeCell::Alive ? '1' : '0');
+            file << (cell.getType() == TypeCell::Alive ? '1' : '0') << ' ';
         }
         file << '\n';
     }
