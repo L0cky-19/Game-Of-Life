@@ -110,7 +110,3 @@ GridDimensions FileHandler::loadDimensions(string filename)
     file >> dims.width >> dims.height;
     return dims;
 }
-
-FileHandler::~FileHandler() {
-    // Cleanup if necessary
-}

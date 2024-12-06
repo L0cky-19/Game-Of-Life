@@ -62,7 +62,7 @@ public:
     FileHandler *getFileHandler() const;
     int getNumberOfIterations() const;
 
-    ~Game() {
+    virtual ~Game() override {
         delete grid;
         delete renderer;
         delete currentState;

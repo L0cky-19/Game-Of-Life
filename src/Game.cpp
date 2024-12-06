@@ -63,8 +63,11 @@ void Game::setup()
     // this->displaySettings(filename, grid);
     this->inputRenderer();
     // todo: subscribe / attach
-    this->attach(shared_ptr<Observer>(this->getRenderer()));
-    this->attach(shared_ptr<Observer>(this->getFileHandler())); // Updated line
+    auto rendererPtr = std::shared_ptr<Observer>(renderer, [](Observer*){});  // Empty deleter
+    auto fileHandlerPtr = std::shared_ptr<Observer>(fileHandler, [](Observer*){});  // Empty deleter
+
+    this->attach(rendererPtr);
+    this->attach(fileHandlerPtr);
 }
 
 void Game::displaySettings(string filename, Grid *grid)
