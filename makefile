@@ -19,7 +19,7 @@ SRCS = $(SRC_DIR)/main.cpp \
        $(SRC_DIR)/evolution-strategy/HighLifeEvolution.cpp \
        $(SRC_DIR)/game-state/PlayState.cpp \
        $(SRC_DIR)/game-state/PauseState.cpp \
-       $(SRC_DIR)/file-handler/FileHandler.cpp \
+	   $(SRC_DIR)/file-handler/FileHandler.cpp \
 
 # Génération des chemins des fichiers objets dans build/
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
@@ -29,8 +29,8 @@ TARGET = $(BUILD_DIR)/game-of-life
 
 # Règle par défaut
 all: create_dirs $(TARGET)
-    copy C:\SFML\bin\*.dll $(BUILD_DIR)
-    $(TARGET)
+	copy C:\SFML\bin\*.dll $(BUILD_DIR)
+	$(TARGET)
 
 # Création des répertoires nécessaires
 BUILD_DIRS = $(BUILD_DIR) \
@@ -39,23 +39,23 @@ BUILD_DIRS = $(BUILD_DIR) \
              $(BUILD_DIR)/evolution-strategy
 
 create_dirs:
-    @if not exist "$(BUILD_DIR)" mkdir "$(BUILD_DIR)"
-    @if not exist "$(BUILD_DIR)\renderer" mkdir "$(BUILD_DIR)\renderer"
-    @if not exist "$(BUILD_DIR)\game-state" mkdir "$(BUILD_DIR)\game-state"
-    @if not exist "$(BUILD_DIR)\evolution-strategy" mkdir "$(BUILD_DIR)\evolution-strategy"
-    @if not exist "$(BUILD_DIR)\file-handler" mkdir "$(BUILD_DIR)\file-handler"
+	@if not exist "$(BUILD_DIR)" mkdir "$(BUILD_DIR)"
+	@if not exist "$(BUILD_DIR)\renderer" mkdir "$(BUILD_DIR)\renderer"
+	@if not exist "$(BUILD_DIR)\game-state" mkdir "$(BUILD_DIR)\game-state"
+	@if not exist "$(BUILD_DIR)\evolution-strategy" mkdir "$(BUILD_DIR)\evolution-strategy"
+	@if not exist "$(BUILD_DIR)\file-handler" mkdir "$(BUILD_DIR)\file-handler"
 
 # Création de l'exécutable
 $(TARGET): $(OBJS)
-    $(CXX) $(OBJS) -o $(TARGET) $(LDFLAGS) $(LIBS)
+	$(CXX) $(OBJS) -o $(TARGET) $(LDFLAGS) $(LIBS)
 
 # Règle de compilation pour les fichiers source
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
-    @if not exist $(@D) mkdir $(@D)
-    $(CXX) $(CXXFLAGS) -c $< -o $@
+	@if not exist $(@D) mkdir $(@D)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Nettoyage
 clean:
-    if exist $(BUILD_DIR) rmdir /s /q $(BUILD_DIR)
+	if exist $(BUILD_DIR) rmdir /s /q $(BUILD_DIR)
 
 .PHONY: all clean create_dirs
