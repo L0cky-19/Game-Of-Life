@@ -6,7 +6,7 @@
 #include "./file-handler/FileHandler.hpp"
 #include "./game-state/GameState.hpp"
 
-struct GridData //todo: voir si on le deplace dans grid peut être?
+struct GridData // todo: voir si on le deplace dans grid peut être?
 {
     int height;
     int width;
@@ -28,6 +28,7 @@ protected: //TODO: why protected?
 public:
     bool isPaused;
     bool isGameOver;
+    bool isFileLoaded;
 
     Game(/*std::string filename*/);
 
@@ -45,20 +46,20 @@ public:
     void setFileHandler(FileHandler *filehandler);
     void setNumberOfIterations(int iterations);
 
-    //todo: maybe export these to a config class?
+    // todo: maybe export these to a config class?
     string inputLoadChoice(); // returns -1 if new game & text if he loads
     GridData inputGridData(); // returns width height and todoidal or not
     void inputEvolutionStrategy();
     void inputRenderer();
     void inputIterationInfo();
-    void displaySettings(string filename, Grid* grid);//todo: takes in the settings that are not attached to games, maybe ask a question to Alexis about this?
+    void displaySettings(string filename, Grid *grid); // todo: takes in the settings that are not attached to games, maybe ask a question to Alexis about this?
 
-//getters
-    IRenderer* getRenderer() const;
-    IEvolutionStrategy* getEvolutionStrategy() const;
+    // getters
+    IRenderer *getRenderer() const;
+    IEvolutionStrategy *getEvolutionStrategy() const;
     float getIterationDelay() const;
-    Grid* getGrid() const;
-    FileHandler* getFileHandler() const;
+    Grid *getGrid() const;
+    FileHandler *getFileHandler() const;
     int getNumberOfIterations() const;
 
 };

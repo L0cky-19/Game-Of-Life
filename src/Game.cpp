@@ -13,13 +13,13 @@
 #include "../include/renderer/GraphicRenderer.hpp"
 using namespace std;
 
-//TODO: nombre d'iterations?
-//TODO: class config pour simplifier Game? ( game aurait un objet config et config aurait toutes les methodes de config )
-//TODO: stoi au lieu de static cast?
-//TODO: subscriptions? (renderer & filehandler sub a update de la grille?)
-//TODO: init grille et tout dans setup?
-//TODO: for pause use multithreading??? a second thread for the console cin so that if the user gives a pause input. We use an IPC (inter processing ...) and it tells the other thread to stop.
-//TODO: make file handler a subject
+// TODO: nombre d'iterations?
+// TODO: class config pour simplifier Game? ( game aurait un objet config et config aurait toutes les methodes de config )
+// TODO: stoi au lieu de static cast?
+// TODO: subscriptions? (renderer & filehandler sub a update de la grille?)
+// TODO: init grille et tout dans setup?
+// TODO: for pause use multithreading??? a second thread for the console cin so that if the user gives a pause input. We use an IPC (inter processing ...) and it tells the other thread to stop.
+// TODO: make file handler a subject
 void Game::setup()
 {
     cout << "=== Evolution Simulation Settings ===\n";
@@ -29,29 +29,45 @@ void Game::setup()
     this->inputEvolutionStrategy();
     this->inputIterationInfo();
 
-    FileHandler* filehandler = new FileHandler();
+    FileHandler *filehandler = new FileHandler();
     this->setFileHandler(filehandler); // needed ?
-    Grid* grid = new Grid(gridData.width, gridData.height, gridData.isToroidal);
-    if (filename.empty()) {
-        grid->initCellsRandom();
-    } else {
 
-    cout << "1";
+    Grid *grid = new Grid(gridData.width, gridData.height, gridData.isToroidal);
+    if (filename.empty())
+    {
+        grid->initCellsRandom();
+    }
+    else
+    {
+        GridDimensions dims = filehandler->loadDimensions(filename);
+        gridData.width = dims.width;
+        gridData.height = dims.height;
+        cout << "Loaded dimensions - Width: " << dims.width << " Height: " << dims.height << endl;
+
         vector<vector<int>> fetchedCells = filehandler->loadInputFromFile(filename);
-    cout << "2";
+        cout << "Loaded grid:" << endl;
+        for (const auto &row : fetchedCells)
+        {
+            for (int cell : row)
+            {
+                cout << cell << " ";
+            }
+            cout << endl;
+        }
+
+        grid = new Grid(gridData.width, gridData.height, gridData.isToroidal);
         grid->initCells(fetchedCells);
-    cout << "3";
     }
     this->setGrid(grid);
 
     //this->displaySettings(filename, grid);
     this->inputRenderer();
     // todo: subscribe / attach
-    //this->getGrid()->attach(this->getRenderer());
-    //this->getGrid()->attach(this->getFileHandler());
+    // this->getGrid()->attach(this->getRenderer());
+    // this->getGrid()->attach(this->getFileHandler());
 }
 
-void Game::displaySettings(string filename, Grid* grid)
+void Game::displaySettings(string filename, Grid *grid)
 {
     cout << "\n=== Settings Summary ===\n";
     cout << "Grid Width: " << grid->getWidth() << "\n";
@@ -61,7 +77,8 @@ void Game::displaySettings(string filename, Grid* grid)
     cout << "Renderer: " << this->getRenderer()->getName() << "\n";
     cout << "Iteration Delay: " << this->getIterationDelay() << " ms\n";
     cout << "Playing from saved game: " << (filename.empty() ? "No" : "Yes") << "\n";
-    if (!filename.empty()) {
+    if (!filename.empty())
+    {
         cout << "Saved Game File: " << filename << "\n";
     }
     cout << "Fetched grid: ";
@@ -88,8 +105,7 @@ void Game::run()
     cout << "\n" << "Fin de la partie" << endl;
 }
 
-
-void Game::pause() //TODO: pas logique d'avoir ces deux fonctions qui font la meme chose.
+void Game::pause() // TODO: pas logique d'avoir ces deux fonctions qui font la meme chose.
 {
     currentState->update();
 }
@@ -119,21 +135,26 @@ void Game::setIterationDelay(int iterationDelay)
     this->iterationDelay = iterationDelay;
 }
 
-Game::Game() {} //TODO: needed or not?
+Game::Game() {} // TODO: needed or not?
 
-string Game::inputLoadChoice() {
+string Game::inputLoadChoice()
+{
     char loadChoice;
     string filename;
 
     cout << "Do you want to load a saved game? (y/n): ";
     cin >> loadChoice;
 
-    if (loadChoice == 'y' || loadChoice == 'Y') {
-        do {
+    if (loadChoice == 'y' || loadChoice == 'Y')
+    {
+        do
+        {
+            isFileLoaded = true;
             cout << "Enter the name of the saved game file: ";
             cin >> filename;
 
-            if (filename.empty()) {
+            if (filename.empty())
+            {
                 cout << "Invalid input. Please enter a valid filename.\n";
             }
         } while (filename.empty());
@@ -141,68 +162,89 @@ string Game::inputLoadChoice() {
     return filename.empty() ? "" : filename;
 }
 
-GridData Game::inputGridData() { //TODO: validation?
+GridData Game::inputGridData()
+{
     GridData gridData;
     char toroidal;
 
-    cout << "Enter grid width: ";
-    cin >> gridData.width;
+    if (!isFileLoaded)
+    {
+        cout << "Enter grid width: ";
+        cin >> gridData.width;
 
-    cout << "Enter grid height: ";
-    cin >> gridData.height;
+        cout << "Enter grid height: ";
+        cin >> gridData.height;
+    }
+    else
+    {
+        gridData.width = 0;
+        gridData.height = 0;
+    }
 
     cout << "Is the grid toroidal? (y/n): ";
     cin >> toroidal;
-
-    bool isToroidal = (isToroidal == 'y' || isToroidal == 'Y');
-    gridData.isToroidal = isToroidal;
+    gridData.isToroidal = (toroidal == 'y' || toroidal == 'Y');
 
     return gridData;
-
 }
 
-void Game::inputEvolutionStrategy() {
+void Game::inputEvolutionStrategy()
+{
     int evolutionStrategy = -1;
-    while (true) {
+    while (true)
+    {
         cout << "Select evolution strategy (0 for basic, 1 for highlife): ";
         cin >> evolutionStrategy;
 
-        if (cin.fail() || (evolutionStrategy != 0 && evolutionStrategy != 1)) {
-            cin.clear(); // Clear the error flags
+        if (cin.fail() || (evolutionStrategy != 0 && evolutionStrategy != 1))
+        {
+            cin.clear();                                         // Clear the error flags
             cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
             cout << "Invalid input. Please enter 0 or 1.\n";
-        } else {
+        }
+        else
+        {
             break;
         }
     }
 
     // todo: enum?
-    if (evolutionStrategy == 0) {
+    if (evolutionStrategy == 0)
+    {
         this->setEvolutionStrategy(new ClassicEvolution()); // Assuming ClassicEvolution is defined
-    } else {
+    }
+    else
+    {
         this->setEvolutionStrategy(new HighLifeEvolution()); // Assuming HighLifeEvolution is defined
     }
 }
 
-
-void Game::inputRenderer() {
+void Game::inputRenderer()
+{
     int renderer = -1;
-  while (true) {
+    while (true)
+    {
         cout << "Select renderer (0 for console, 1 for graphical interface): ";
         cin >> renderer;
 
-        if (cin.fail() || (renderer != 0 && renderer != 1)) {
-            cin.clear(); // Clear the error flags
+        if (cin.fail() || (renderer != 0 && renderer != 1))
+        {
+            cin.clear();                                         // Clear the error flags
             cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
             cout << "Invalid input. Please enter 0 or 1.\n";
-        } else {
+        }
+        else
+        {
             break;
         }
     }
-    //todo: enum ? SUBSCRIBE!!
-    if (renderer == 0) {
+    // todo: enum ? SUBSCRIBE!!
+    if (renderer == 0)
+    {
         this->setRenderer(new ConsoleRenderer()); // Assuming ConsoleRenderer is defined
-    } else {
+    }
+    else
+    {
         this->setRenderer(new GraphicRenderer()); // Assuming GraphicRenderer is defined
     }
 }
@@ -216,11 +258,14 @@ while (true) {
         cout << "Enter iteration delay in milliseconds: ";
         cin >> iterationDelay;
 
-        if (cin.fail() || iterationDelay < 0) {
-            cin.clear(); // Clear the error flags
+        if (cin.fail() || iterationDelay < 0)
+        {
+            cin.clear();                                         // Clear the error flags
             cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
             cout << "Invalid input. Please enter a non-negative number.\n";
-        } else {
+        }
+        else
+        {
             break;
         }
     }
@@ -239,7 +284,6 @@ while (true) {
 
     this->setNumberOfIterations(numberOfIterations); // New setter for iterations
     this->setIterationDelay(static_cast<float>(iterationDelay)); // Assuming iterationDelay is a float
-
 }
 
  void Game::setNumberOfIterations(int iterations) { // New setter method
@@ -250,11 +294,13 @@ IRenderer* Game::getRenderer() const {
     return renderer;
 }
 
-IEvolutionStrategy* Game::getEvolutionStrategy() const {
+IEvolutionStrategy *Game::getEvolutionStrategy() const
+{
     return evolutionStrategy;
 }
 
-float Game::getIterationDelay() const { //TODO: int
+float Game::getIterationDelay() const
+{ // TODO: int
     return this->iterationDelay;
 }
 int Game::getNumberOfIterations() const {
@@ -265,17 +311,17 @@ void Game::setGrid(Grid *grid)
     this->grid = grid;
 }
 
-Grid* Game::getGrid() const
+Grid *Game::getGrid() const
 {
     return grid;
 }
 
-
-FileHandler* Game::getFileHandler() const
+FileHandler *Game::getFileHandler() const
 {
     return this->fileHandler;
 }
 
-void Game::setFileHandler(FileHandler *filehandler) {
+void Game::setFileHandler(FileHandler *filehandler)
+{
     this->fileHandler = filehandler;
 }
