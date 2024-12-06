@@ -31,7 +31,7 @@ vector<vector<int>> FileHandler::loadInputFromFile(string filename)
         {
             if (c == '1')
                 cells[lineCount][j++] = 1;
-            else if (c == '2')
+            else if (c == 'X')
                 cells[lineCount][j++] = 2;
             else if (c == '0')
                 cells[lineCount][j++] = 0;
@@ -67,7 +67,7 @@ void FileHandler::saveGridToFile(Grid *grid)
             if (cell.getType() == TypeCell::Alive)
                 file << '1' << ' ';
             else if (cell.getType() == TypeCell::Obstacle)
-                file << '2' << ' ';
+                file << 'X' << ' ';
             else
                 file << '0' << ' ';
         }
