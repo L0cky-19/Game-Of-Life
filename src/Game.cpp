@@ -25,7 +25,7 @@ void Game::setup()
     cout << "=== Evolution Simulation Settings ===\n";
 
     string filename = this->inputLoadChoice();
-    GridData gridData = this->inputGridData(); //FIXME: demander que la grid data quand filename.empty()
+    GridData gridData = this->inputGridData(); // FIXME: demander que la grid data quand filename.empty()
     this->inputEvolutionStrategy();
     this->inputIterationInfo();
 
@@ -60,7 +60,7 @@ void Game::setup()
     }
     this->setGrid(grid);
 
-    //this->displaySettings(filename, grid);
+    // this->displaySettings(filename, grid);
     this->inputRenderer();
     // todo: subscribe / attach
     // this->getGrid()->attach(this->getRenderer());
@@ -90,16 +90,19 @@ void Game::run()
     bool gameIsRunning = true;
     int iterationCounter = 0;
     int maxIterations = this->getNumberOfIterations();
-    //Grid* grid = this->getGrid();
+    // Grid* grid = this->getGrid();
 
-    while (gameIsRunning) {
+    while (gameIsRunning)
+    {
         iterationCounter++;
-        if (grid->calculateNextGen(evolutionStrategy)) {
+        if (grid->calculateNextGen(evolutionStrategy))
+        {
             gameIsRunning = false;
             std::cout << "Fin du jeu - Grille stable" << std::endl;
             break;
         }
-        if (iterationCounter > maxIterations) {
+        if (iterationCounter > maxIterations)
+        {
             gameIsRunning = false;
             std::cout << "Fin du jeu - Nombre maximum d'itérations atteint" << std::endl;
             break;
@@ -110,7 +113,8 @@ void Game::run()
     }
 
     std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(5000)));
-    cout << "\n" << "Fin de la partie" << endl;
+    cout << "\n"
+         << "Fin de la partie" << endl;
 }
 
 void Game::pause() // TODO: pas logique d'avoir ces deux fonctions qui font la meme chose.
@@ -257,11 +261,13 @@ void Game::inputRenderer()
     }
 }
 
-void Game::inputIterationInfo() {
+void Game::inputIterationInfo()
+{
 
     int iterationDelay = -1;
     int numberOfIterations = -1;
-while (true) {
+    while (true)
+    {
 
         cout << "Enter iteration delay in milliseconds: ";
         cin >> iterationDelay;
@@ -277,28 +283,34 @@ while (true) {
             break;
         }
     }
-     while (true) {
+    while (true)
+    {
         cout << "Enter number of iterations: ";
         cin >> numberOfIterations;
 
-        if (cin.fail() || numberOfIterations < 0) {
-            cin.clear(); // Clear the error flags
+        if (cin.fail() || numberOfIterations < 0)
+        {
+            cin.clear();                                         // Clear the error flags
             cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
             cout << "Invalid input. Please enter a non-negative number.\n";
-        } else {
+        }
+        else
+        {
             break;
         }
     }
 
-    this->setNumberOfIterations(numberOfIterations); // New setter for iterations
+    this->setNumberOfIterations(numberOfIterations);             // New setter for iterations
     this->setIterationDelay(static_cast<float>(iterationDelay)); // Assuming iterationDelay is a float
 }
 
- void Game::setNumberOfIterations(int iterations) { // New setter method
-        numberOfIterations = iterations;
+void Game::setNumberOfIterations(int iterations)
+{ // New setter method
+    numberOfIterations = iterations;
 }
 
-IRenderer* Game::getRenderer() const {
+IRenderer *Game::getRenderer() const
+{
     return renderer;
 }
 
@@ -311,7 +323,8 @@ float Game::getIterationDelay() const
 { // TODO: int
     return this->iterationDelay;
 }
-int Game::getNumberOfIterations() const {
+int Game::getNumberOfIterations() const
+{
     return this->numberOfIterations;
 }
 void Game::setGrid(Grid *grid)
