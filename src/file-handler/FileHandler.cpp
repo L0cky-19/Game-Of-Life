@@ -1,15 +1,28 @@
 #include "../../include/file-handler/FileHandler.hpp"
 #include <iostream>
 #include <fstream>
+#include "../../include/Game.hpp"
 
 using namespace std;
 
+
+void FileHandler::update(Subject* subject) {
+    //TODO: here get file handler + ...
+    Game* game = dynamic_cast<Game*>(subject);
+    if (game) {
+        Grid* grid = game->getGrid(); // Now you can access the grid
+        FileHandler fh = FileHandler();
+        fh.saveGridToFile(grid);
+    } else {
+        throw runtime_error("Subject is not of type Game");
+    }
+}
 vector<vector<int>> FileHandler::loadInputFromFile(string filename)
 {
     ifstream file(filename);
     if (!file.is_open())
     {
-        throw runtime_error("Could not open file: " + filename);
+        throw runtime_error("Could not open file: " + filename + ", please verify file path.");
     }
 
     int width, height;
@@ -31,7 +44,7 @@ vector<vector<int>> FileHandler::loadInputFromFile(string filename)
         {
             if (c == '1')
                 cells[lineCount][j++] = 1;
-            else if (c == '2')
+            else if (c == 'X')
                 cells[lineCount][j++] = 2;
             else if (c == '0')
                 cells[lineCount][j++] = 0;
@@ -67,7 +80,7 @@ void FileHandler::saveGridToFile(Grid *grid)
             if (cell.getType() == TypeCell::Alive)
                 file << '1' << ' ';
             else if (cell.getType() == TypeCell::Obstacle)
-                file << '2' << ' ';
+                file << 'X' << ' ';
             else
                 file << '0' << ' ';
         }
@@ -90,10 +103,14 @@ GridDimensions FileHandler::loadDimensions(string filename)
     ifstream file(filename);
     if (!file.is_open())
     {
-        throw runtime_error("Could not open file: " + filename);
+       throw runtime_error("Could not open file: " + filename + ", please verify file path.");
     }
 
     GridDimensions dims;
     file >> dims.width >> dims.height;
     return dims;
+}
+
+FileHandler::~FileHandler() {
+    // Cleanup if necessary
 }
