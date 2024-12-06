@@ -33,4 +33,8 @@ public:
     int countLiveNeighbors(int x, int y);
     void printCells() const;
     bool isGridStable(const std::vector<std::vector<TypeCell>>& nextGen) const;
+
+    virtual ~Grid() override {
+        cells.clear();
+    }
 };

@@ -72,6 +72,12 @@
         "numbers": "cpp",
         "semaphore": "cpp",
         "span": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "chrono": "cpp",
+        "forward_list": "cpp",
+        "iomanip": "cpp",
+        "sstream": "cpp",
+        "list": "cpp",
+        "fstream": "cpp"
     }
 }

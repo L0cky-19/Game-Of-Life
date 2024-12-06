@@ -5,6 +5,8 @@
 // Derived class representing the Play state
 class PlayState : public GameState {
 public:
+    PlayState() = default;
+    virtual ~PlayState() override = default;
     // Override the update function to transition to PauseState
     std::unique_ptr<GameState> update() override;
 };

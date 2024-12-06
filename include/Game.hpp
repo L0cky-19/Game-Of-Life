@@ -60,4 +60,12 @@ public:
     Grid *getGrid() const;
     FileHandler *getFileHandler() const;
     int getNumberOfIterations() const;
+
+    ~Game() {
+        delete grid;
+        delete renderer;
+        delete currentState;
+        delete evolutionStrategy;
+        delete fileHandler;
+    }
 };

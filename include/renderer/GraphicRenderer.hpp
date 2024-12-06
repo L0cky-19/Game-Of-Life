@@ -15,7 +15,11 @@ private:
 
 public:
     GraphicRenderer();
-    virtual ~GraphicRenderer() = default;
+    virtual ~GraphicRenderer() override {
+        if (window.isOpen()) {
+            window.close();
+        }
+    }
     void render(Grid* grid) override;
     void update(Subject* subject) override;
     sf::RenderWindow& getWindow() { return window; } //TODO: put in cpp

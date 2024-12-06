@@ -14,6 +14,8 @@ struct GridDimensions
 class FileHandler
 {
 public:
+    FileHandler() = default;
+    virtual ~FileHandler() = default;
     GridDimensions loadDimensions(string filename);
     vector<vector<int>> loadInputFromFile(string filename);
     void saveGridToFile(Grid *grid);
