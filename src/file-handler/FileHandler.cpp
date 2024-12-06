@@ -18,20 +18,30 @@ vector<vector<int>> FileHandler::loadInputFromFile(string filename)
 
     vector<vector<int>> cells(height, vector<int>(width));
     string line;
+    int lineCount = 0;
 
-    for (int i = 0; i < height; i++)
+    while (getline(file, line) && !line.empty())
     {
-        getline(file, line);
+        if ((line.length() + 1) / 2 != width)
+        {
+            throw runtime_error("Grid dimensions in file do not match specified width");
+        }
         int j = 0;
         for (char c : line)
         {
             if (c == '1')
-                cells[i][j++] = 1;
+                cells[lineCount][j++] = 1;
             else if (c == '2')
-                cells[i][j++] = 2;
+                cells[lineCount][j++] = 2;
             else if (c == '0')
-                cells[i][j++] = 0;
+                cells[lineCount][j++] = 0;
         }
+        lineCount++;
+    }
+
+    if (lineCount != height)
+    {
+        throw runtime_error("Grid dimensions in file do not match specified height");
     }
 
     return cells;
