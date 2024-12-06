@@ -94,9 +94,17 @@ void Game::run()
 
     while (gameIsRunning) {
         iterationCounter++;
-        if (iterationCounter > maxIterations) gameIsRunning = false;
+        if (grid->calculateNextGen(evolutionStrategy)) {
+            gameIsRunning = false;
+            std::cout << "Fin du jeu - Grille stable" << std::endl;
+            break;
+        }
+        if (iterationCounter > maxIterations) {
+            gameIsRunning = false;
+            std::cout << "Fin du jeu - Nombre maximum d'itérations atteint" << std::endl;
+            break;
+        }
         this->getRenderer()->render(grid);
-        grid->calculateNextGen(evolutionStrategy); //TODO: rename to nextIteration that encapsulates the other logic
         this->getFileHandler()->saveGridToFile(grid);
         std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(this->getIterationDelay())));
     }

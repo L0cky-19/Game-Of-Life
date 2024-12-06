@@ -88,7 +88,19 @@ int Grid::countLiveNeighbors(int x, int y)
     }
     return count;
 }
-void Grid::calculateNextGen(IEvolutionStrategy* evolutionStrategy)
+
+bool Grid::isGridStable(const vector<vector<TypeCell>>& nextGen) const {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            if (nextGen[y][x] != cells[y][x].getType()) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool Grid::calculateNextGen(IEvolutionStrategy* evolutionStrategy)
 {
     vector<vector<TypeCell>> nextGen(height, vector<TypeCell>(width, TypeCell::Dead));
 
@@ -102,11 +114,17 @@ void Grid::calculateNextGen(IEvolutionStrategy* evolutionStrategy)
         }
     }
 
+    if (isGridStable(nextGen)) {
+        std::cout << "Le jeu est stable" << std::endl;
+        return true;
+    }
+
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             cells[y][x].setType(nextGen[y][x]);
         }
     }
+    return false;
 }
 void Grid::update(IEvolutionStrategy *evolutionStrategy)
 {
@@ -151,3 +169,4 @@ void Grid::printCells() const {
         cout << endl;
     }
 }
+
