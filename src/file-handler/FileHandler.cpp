@@ -25,10 +25,12 @@ vector<vector<int>> FileHandler::loadInputFromFile(string filename)
         int j = 0;
         for (char c : line)
         {
-            if (c == '1' || c == '0')
-            {
-                cells[i][j++] = c - '0';
-            }
+            if (c == '1')
+                cells[i][j++] = 1;
+            else if (c == '2')
+                cells[i][j++] = 2;
+            else if (c == '0')
+                cells[i][j++] = 0;
         }
     }
 
@@ -42,22 +44,22 @@ void FileHandler::saveGridToFile(Grid *grid)
     {
         throw runtime_error("Could not saved file: updateGrid.txt");
     }
-    else
-    {
-        std::cout << "File saved successfully" << std::endl;
-    }
 
-    int width = grid->getWidth();   // Assuming Grid has getWidth()
-    int height = grid->getHeight(); // Assuming Grid has getHeight()
+    int width = grid->getWidth();
+    int height = grid->getHeight();
     file << width << " " << height << '\n';
 
     auto cells = grid->getCells();
-
     for (const auto &row : cells)
     {
         for (const Cell &cell : row)
         {
-            file << (cell.getType() == TypeCell::Alive ? '1' : '0') << ' ';
+            if (cell.getType() == TypeCell::Alive)
+                file << '1';
+            else if (cell.getType() == TypeCell::Obstacle)
+                file << '2';
+            else
+                file << '0';
         }
         file << '\n';
     }

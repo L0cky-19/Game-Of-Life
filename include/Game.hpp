@@ -15,7 +15,7 @@ struct GridData // todo: voir si on le deplace dans grid peut être?
 
 class Game
 {
-protected: //TODO: why protected?
+protected: // TODO: why protected?
     Grid *grid;
     IRenderer *renderer;
     GameState *currentState;
@@ -24,18 +24,17 @@ protected: //TODO: why protected?
     float iterationDelay;
     int numberOfIterations;
 
-
 public:
     bool isPaused;
     bool isGameOver;
-    bool isFileLoaded;
+    bool isFileLoaded = false;
 
     Game(/*std::string filename*/);
 
     void run();
     void setup();
     void pause();
-    void resume(); //TODO: rm?
+    void resume(); // TODO: rm?
 
     // setters
     void setRenderer(IRenderer *renderer);
@@ -61,5 +60,4 @@ public:
     Grid *getGrid() const;
     FileHandler *getFileHandler() const;
     int getNumberOfIterations() const;
-
 };
