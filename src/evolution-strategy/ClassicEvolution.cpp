@@ -3,7 +3,7 @@
 
 bool ClassicEvolution::evolve(Cell *cell, int liveNeighbors) const
 {
-    if (cell == nullptr)
+    if (cell == nullptr || cell->getType() == TypeCell::Obstacle)
     {
         return false;
     }
