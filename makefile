@@ -15,6 +15,7 @@ SRCS = $(SRC_DIR)/main.cpp \
        $(SRC_DIR)/Cell.cpp \
        $(SRC_DIR)/renderer/ConsoleRenderer.cpp \
        $(SRC_DIR)/renderer/GraphicRenderer.cpp \
+	   $(SRC_DIR)/renderer/Subject.cpp \
        $(SRC_DIR)/evolution-strategy/ClassicEvolution.cpp \
        $(SRC_DIR)/evolution-strategy/HighLifeEvolution.cpp \
        $(SRC_DIR)/game-state/PlayState.cpp \

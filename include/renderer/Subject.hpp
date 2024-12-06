@@ -3,6 +3,8 @@
 #include <vector>
 #pragma once
 
+//TODO: changer l'endroit, il ne devrait pas être ici
+
 class Subject { //TODO: export this design pattern
 public:
     virtual ~Subject() = default;

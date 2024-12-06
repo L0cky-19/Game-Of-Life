@@ -5,8 +5,8 @@
 #include "Cell.hpp"
 #include "./evolution-strategy/IEvolutionStrategy.hpp"
 
-class Grid : public Subject
-{ // Now Grid inherits from Subject
+class Grid
+{
 private:
     std::vector<std::vector<Cell>> cells;
     int width;
