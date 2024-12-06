@@ -1,9 +1,11 @@
 #include "../include/Grid.hpp"
 #include "../include/Cell.hpp"
+#include "../include/evolution-strategy/ClassicEvolution.hpp"
 #include <cstdlib>
 #include <ctime>
 #include <vector>
 #include <iostream>
+#include <gtest/gtest.h>
 using namespace std;
 
 Grid::Grid(int width, int height, bool isToroidal) : width(width), height(height), isToroidal(isToroidal) {}
@@ -221,4 +223,52 @@ void Grid::printCells() const
         }
         cout << endl;
     }
+}
+
+void Grid::testCellBehavior()
+{
+    Grid grid(3, 3, false);
+    vector<vector<int>> testGrid = {
+        {0, 1, 0},
+        {1, 1, 1},
+        {0, 1, 0}};
+
+    grid.initCells(testGrid);
+    IEvolutionStrategy *strategy = new ClassicEvolution();
+
+    bool success = grid.calculateNextGen(strategy);
+
+    delete strategy;
+    cout << "Cell behavior test completed" << endl;
+}
+
+TEST(GridTest, CellEvolution)
+{
+    Grid grid(3, 3, false);
+    vector<vector<int>> testGrid = {
+        {0, 1, 0},
+        {1, 1, 1},
+        {0, 1, 0}};
+
+    grid.initCells(testGrid);
+    IEvolutionStrategy *strategy = new ClassicEvolution();
+
+    grid.calculateNextGen(strategy);
+    auto cells = grid.getCells();
+
+    vector<vector<int>> expectedGrid = {
+        {1, 1, 1},
+        {1, 0, 1},
+        {1, 1, 1}};
+
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            bool isAlive = cells[i][j].getType() == TypeCell::Alive;
+            EXPECT_EQ(isAlive, expectedGrid[i][j] == 1);
+        }
+    }
+
+    delete strategy;
 }
