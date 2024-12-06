@@ -90,7 +90,7 @@ GridDimensions FileHandler::loadDimensions(string filename)
     ifstream file(filename);
     if (!file.is_open())
     {
-        throw runtime_error("Could not open file: " + filename);
+       throw runtime_error("Could not open file: " + filename + ", please verify file path.");
     }
 
     GridDimensions dims;
