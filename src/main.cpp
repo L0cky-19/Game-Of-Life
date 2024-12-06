@@ -4,8 +4,6 @@
 // TODO: check if Interfaces keep their name if they are not virtual anymore?
 int main()
 {
-    Grid::testCellBehavior(); // TODO: uncomment this to test cell behavior
-
     Game game;
     game.setup();
     game.run();
