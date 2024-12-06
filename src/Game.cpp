@@ -107,8 +107,8 @@ void Game::run()
             std::cout << "Fin du jeu - Nombre maximum d'itérations atteint" << std::endl;
             break;
         }
-        this->notify();
 
+        this->notify(); // notification des observers (renderer & filehandler)
         std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(this->getIterationDelay())));
     }
 
