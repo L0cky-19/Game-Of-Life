@@ -1,5 +1,6 @@
 #include "../../include/renderer/GraphicRenderer.hpp"
 #include "../../include/Grid.hpp"
+#include "../../include/Game.hpp"
 #include <iostream>
 
 GraphicRenderer::GraphicRenderer()
@@ -20,9 +21,12 @@ GraphicRenderer::GraphicRenderer()
 
 void GraphicRenderer::update(Subject *subject)
 {
-    if (Grid *grid = dynamic_cast<Grid *>(subject))
-    {
-        render(grid);
+    Game *game = dynamic_cast<Game*>(subject); //TODO: same function for both, define in interface?
+    if (game) {
+        render(game->getGrid());
+    } else {
+        // Handle the case where the subject is not a Game
+        std::cerr << "Error: Subject is not of type Game." << std::endl;
     }
 }
 

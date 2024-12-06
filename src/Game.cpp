@@ -63,8 +63,8 @@ void Game::setup()
     // this->displaySettings(filename, grid);
     this->inputRenderer();
     // todo: subscribe / attach
-    // this->getGrid()->attach(this->getRenderer());
-    // this->getGrid()->attach(this->getFileHandler());
+    this->attach(shared_ptr<Observer>(this->getRenderer()));
+    this->attach(shared_ptr<Observer>(this->getFileHandler())); // Updated line
 }
 
 void Game::displaySettings(string filename, Grid *grid)
@@ -107,8 +107,8 @@ void Game::run()
             std::cout << "Fin du jeu - Nombre maximum d'itérations atteint" << std::endl;
             break;
         }
-        this->getRenderer()->render(grid);
-        this->getFileHandler()->saveGridToFile(grid);
+
+        this->notify(); // notification des observers (renderer & filehandler)
         std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(this->getIterationDelay())));
     }
 

@@ -5,6 +5,7 @@
 #include "./evolution-strategy/IEvolutionStrategy.hpp"
 #include "./file-handler/FileHandler.hpp"
 #include "./game-state/GameState.hpp"
+#include "./renderer/Subject.hpp"
 
 struct GridData // todo: voir si on le deplace dans grid peut être?
 {
@@ -13,14 +14,14 @@ struct GridData // todo: voir si on le deplace dans grid peut être?
     bool isToroidal;
 };
 
-class Game
+class Game : public Subject
 {
 protected: // TODO: why protected?
     Grid *grid;
     IRenderer *renderer;
     GameState *currentState;
     IEvolutionStrategy *evolutionStrategy;
-    FileHandler *fileHandler;
+    FileHandler *fileHandler; //TODO: besoin ici d'être attaché?
     float iterationDelay;
     int numberOfIterations;
 

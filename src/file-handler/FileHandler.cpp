@@ -1,9 +1,22 @@
 #include "../../include/file-handler/FileHandler.hpp"
 #include <iostream>
 #include <fstream>
+#include "../../include/Game.hpp"
 
 using namespace std;
 
+
+void FileHandler::update(Subject* subject) {
+    //TODO: here get file handler + ...
+    Game* game = dynamic_cast<Game*>(subject);
+    if (game) {
+        Grid* grid = game->getGrid(); // Now you can access the grid
+        FileHandler fh = FileHandler();
+        fh.saveGridToFile(grid);
+    } else {
+        throw runtime_error("Subject is not of type Game");
+    }
+}
 vector<vector<int>> FileHandler::loadInputFromFile(string filename)
 {
     ifstream file(filename);
@@ -96,4 +109,8 @@ GridDimensions FileHandler::loadDimensions(string filename)
     GridDimensions dims;
     file >> dims.width >> dims.height;
     return dims;
+}
+
+FileHandler::~FileHandler() {
+    // Cleanup if necessary
 }
