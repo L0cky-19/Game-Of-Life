@@ -61,4 +61,12 @@ public:
     Grid *getGrid() const;
     FileHandler *getFileHandler() const;
     int getNumberOfIterations() const;
+
+    virtual ~Game() override {
+        delete grid;
+        delete renderer;
+        delete currentState;
+        delete evolutionStrategy;
+        delete fileHandler;
+    }
 };

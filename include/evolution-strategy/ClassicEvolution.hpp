@@ -10,4 +10,5 @@ public:
     bool evolve(Cell* cell, int liveNeighbors) const override; //TODO: check if we need const
     ClassicEvolution();
     string getName() const override;
+    virtual ~ClassicEvolution() override = default;
 };
