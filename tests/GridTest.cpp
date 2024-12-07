@@ -1,10 +1,23 @@
-#include <gtest/gtest.h>
+#include <C:/msys64/mingw64/include/gtest/gtest.h>
 #include "../include/Grid.hpp"
 #include "../include/evolution-strategy/ClassicEvolution.hpp"
+#include <iostream>
 
-TEST(GridTest, CellEvolution)
+// Macro pour une sortie colorée
+#define GTEST_COUT std::cerr << "[   INFO   ] \033[1;36m"
+#define GTEST_COUT_END "\033[0m" << std::endl
+
+class GridTest : public ::testing::Test {
+protected:
+    void SetUp() override {
+    }
+
+    void TearDown() override {
+    }
+};
+
+TEST_F(GridTest, CellEvolution)
 {
-    // Setup initial grid 3x3 with a cross pattern
     Grid grid(3, 3, false);
     vector<vector<int>> testGrid = {
         {0, 1, 0},  // Dead, Alive, Dead
@@ -14,9 +27,12 @@ TEST(GridTest, CellEvolution)
     grid.initCells(testGrid);
     IEvolutionStrategy *strategy = new ClassicEvolution();
 
-    // Apply one generation of evolution
+    grid.printCells();
+
     grid.calculateNextGen(strategy);
     auto cells = grid.getCells();
+
+    grid.printCells();
 
     // Expected result: all cells around center become alive, center dies
     vector<vector<int>> expectedGrid = {

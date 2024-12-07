@@ -5,7 +5,6 @@
 #include <ctime>
 #include <vector>
 #include <iostream>
-#include <gtest/gtest.h>
 using namespace std;
 
 Grid::Grid(int width, int height, bool isToroidal) : width(width), height(height), isToroidal(isToroidal) {}
