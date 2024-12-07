@@ -19,10 +19,13 @@ struct GridData // todo: voir si on le deplace dans grid peut être?
 enum class inputType {
     inputLoadChoice,
     inputFilename,
-    inputGridData,
+    inputGridDataWidth,
+    inputGridDataHeight,
+    inputGridDataToroidal,
     inputEvolutionStrategy,
     inputRenderer,
-    inputIterationInfo
+    inputIterationNumber,
+    inputIterationDelay
 };
 
 class Game : public Subject

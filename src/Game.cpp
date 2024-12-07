@@ -43,8 +43,8 @@ void Game::setup()
     
     this->setGrid(grid);
     this->inputEvolutionStrategy();
-    this->inputRenderer();
     this->inputIterationInfo();
+    this->inputRenderer();
 
     auto rendererPtr = std::shared_ptr<Observer>(renderer, [](Observer*){});
     auto fileHandlerPtr = std::shared_ptr<Observer>(fileHandler, [](Observer*){});
@@ -72,13 +72,6 @@ void Game::displaySettings(string filename, Grid *grid)
 }
 
 // TODO: make this a template
-// TODO: make validResponses a template
-vector<string> validResponsesInputLoadChoice = {"y", "n"};
-vector<int> validResponsesInputGridData = {};
-vector<string> validResponsesInputEvolutionStrategy = {"0", "1"};
-vector<string> validResponsesInputRenderer = {"0", "1"};
-vector<int> validResponsesInputIterationInfo = {};
-
 template <typename T>
 T Game::inputLogic(const string& question, const T& defaultValue, vector<T> validResponses, inputType inputType) {
     T response;
@@ -129,14 +122,24 @@ T Game::inputLogic(const string& question, const T& defaultValue, vector<T> vali
                 int value = std::stoi(input);
                 
                 // Validation spécifique selon le type d'input
-                if (inputType == inputType::inputGridData) {
-                    if (value < 3 || value > 100) {
-                        throw runtime_error("Grid dimensions must be between 3 and 100");
+                if (inputType == inputType::inputGridDataWidth) {
+                    if (value < 1 || value > 1000000) {
+                        throw runtime_error("Grid dimensions must be between 1 and 1000000");
                     }
                 }
-                else if (inputType == inputType::inputIterationInfo) {
-                    if (value < 1 || value > 1000) {
-                        throw runtime_error("Value must be between 1 and 1000");
+                else if (inputType == inputType::inputGridDataHeight) {
+                    if (value < 1 || value > 1000000) {
+                        throw runtime_error("Grid dimensions must be between 1 and 1000000");
+                    }
+                }
+                else if (inputType == inputType::inputIterationNumber) {
+                    if (value < 1 || value > 1000000) {
+                        throw runtime_error("Value must be between 1 and 1000000");
+                    }
+                }
+                else if (inputType == inputType::inputIterationDelay) {
+                    if (value < 0 || value > 1000000) {
+                        throw runtime_error("Value must be between 0 and 1000000");
                     }
                 }
                 
@@ -228,18 +231,24 @@ Game::Game() :
     questions{
         {inputType::inputLoadChoice, "Do you want to load from file? (y/n): "},
         {inputType::inputFilename, "Enter the name of the saved game file: "},
-        {inputType::inputGridData, "Enter grid dimensions (width height): "},
-        {inputType::inputEvolutionStrategy, "Choose evolution strategy (0: Classic, 1: Custom): "},
-        {inputType::inputRenderer, "Choose renderer (0: Console, 1: SFML): "},
-        {inputType::inputIterationInfo, "Enter number of iterations: "}
+        {inputType::inputGridDataWidth, "Enter grid width (1-1000000): "},
+        {inputType::inputGridDataHeight, "Enter grid height (1-1000000): "},
+        {inputType::inputGridDataToroidal, "Do you want a toroidal grid? (y/n): "},
+        {inputType::inputEvolutionStrategy, "Select evolution strategy (0 for basic, 1 for highlife): "},
+        {inputType::inputIterationNumber, "Enter number of iterations (1-1000000): "},
+        {inputType::inputIterationDelay, "Enter delay between iterations (ms, 0-1000000): "},
+        {inputType::inputRenderer, "Select renderer (0 for console, 1 for graphical interface): "}
     },
     validResponses{
         {inputType::inputLoadChoice, {"y", "n"}},
         {inputType::inputFilename, {}},
-        {inputType::inputGridData, {}},
+        {inputType::inputGridDataWidth, {}},
+        {inputType::inputGridDataHeight, {}},
+        {inputType::inputGridDataToroidal, {"y", "n"}},
         {inputType::inputEvolutionStrategy, {"0", "1"}},
         {inputType::inputRenderer, {"0", "1"}},
-        {inputType::inputIterationInfo, {}}
+        {inputType::inputIterationNumber, {}},
+        {inputType::inputIterationDelay, {}}
     },
     grid(nullptr),
     renderer(nullptr),
@@ -255,45 +264,44 @@ Game::Game() :
 }
 string Game::inputLoadChoice() {
     return inputLogic<string>(
-        "Do you want to load from file? (y/n): ",
+        questions.at(inputType::inputLoadChoice),
         "n",
-        {"y", "n"},
+        validResponses.at(inputType::inputLoadChoice),
         inputType::inputLoadChoice
     );
 }
 
 string Game::inputFilename() {
     return inputLogic<string>(
-        "Enter the name of the saved game file: ",
+        questions.at(inputType::inputFilename),
         "",
-        {},
+        validResponses.at(inputType::inputFilename),
         inputType::inputFilename
     );
 }   
 
 GridData Game::inputGridData() {
     GridData data;
-    // Validation des dimensions (par exemple entre 3 et 100)
     data.width = inputLogic<int>(
-        "Enter grid width (3-100): ",
+        questions.at(inputType::inputGridDataWidth),
         10,
-        {3, 4, 5, 6, 7, 8, 9, 10, /* ... jusqu'à 100 */},
-        inputType::inputGridData
+        vector<int>{},
+        inputType::inputGridDataWidth
     );
     
     data.height = inputLogic<int>(
-        "Enter grid height (3-100): ",
+        questions.at(inputType::inputGridDataHeight),
         10,
-        {3, 4, 5, 6, 7, 8, 9, 10, /* ... jusqu'à 100 */},
-        inputType::inputGridData
+        vector<int>{},
+        inputType::inputGridDataHeight
     );
 
     // Validation toroidal oui/non
     string toroidal = inputLogic<string>(
-        "Do you want a toroidal grid? (y/n): ",
+        questions.at(inputType::inputGridDataToroidal),
         "n",
-        {"y", "n"},
-        inputType::inputGridData
+        validResponses.at(inputType::inputGridDataToroidal),
+        inputType::inputGridDataToroidal
     );
     data.isToroidal = (toroidal == "y");
 
@@ -302,9 +310,9 @@ GridData Game::inputGridData() {
 
 void Game::inputEvolutionStrategy() {
     string choice = inputLogic<string>(
-        "Choose evolution strategy:\n0: Classic\n1: Custom\nChoice: ",
+        questions.at(inputType::inputEvolutionStrategy),
         "0",
-        {"0", "1"},
+        validResponses.at(inputType::inputEvolutionStrategy),
         inputType::inputEvolutionStrategy
     );
     
@@ -317,9 +325,9 @@ void Game::inputEvolutionStrategy() {
 
 void Game::inputRenderer() {
     string choice = inputLogic<string>(
-        "Choose renderer:\n0: Console\n1: SFML\nChoice: ",
+        questions.at(inputType::inputRenderer),
         "0",
-        {"0", "1"},
+        validResponses.at(inputType::inputRenderer),
         inputType::inputRenderer
     );
     
@@ -333,19 +341,19 @@ void Game::inputRenderer() {
 void Game::inputIterationInfo() {
     this->setNumberOfIterations(
         inputLogic<int>(
-            "Enter number of iterations (1-1000): ",
+            questions.at(inputType::inputIterationNumber),
             100,
-            {/* valeurs de 1 à 1000 */},
-            inputType::inputIterationInfo
+            vector<int>{},
+            inputType::inputIterationNumber
         )
     );
     
     this->setIterationDelay(
         inputLogic<int>(
-            "Enter delay between iterations (ms, 0-1000): ",
+            questions.at(inputType::inputIterationDelay),
             100,
-            {/* valeurs de 0 à 1000 */},
-            inputType::inputIterationInfo
+            vector<int>{},
+            inputType::inputIterationDelay
         )
     );
 }
