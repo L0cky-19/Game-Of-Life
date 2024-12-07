@@ -11,6 +11,7 @@
 #include "../include/evolution-strategy/ClassicEvolution.hpp"
 #include "../include/renderer/ConsoleRenderer.hpp"
 #include "../include/renderer/GraphicRenderer.hpp"
+#include "../include/input/Config.hpp"
 using namespace std;
 
 // TODO: nombre d'iterations?
@@ -24,33 +25,46 @@ void Game::setup()
 {
     cout << "=== Evolution Simulation Settings ===\n";
 
-    string loadChoice = this->inputLoadChoice();
+    string loadChoice = config.inputLoadChoice();
     FileHandler *filehandler = new FileHandler();
     this->setFileHandler(filehandler);
     
     Grid* grid;
-    if (loadChoice == "y") {  // Si on veut charger un fichier
-        string filename = this->inputFilename();  // Demande le nom du fichier
+    if (loadChoice == "y") {
+        string filename = config.inputFilename();
         GridDimensions dims = filehandler->loadDimensions(filename);
         vector<vector<int>> fetchedCells = filehandler->loadInputFromFile(filename);
-        grid = new Grid(dims.width, dims.height, true);  // TODO: gérer isToroidal depuis le fichier
+        grid = new Grid(dims.width, dims.height, true);
         grid->initCells(fetchedCells);
-        
     } else {
-        GridData gridData = this->inputGridData();
+        GridData gridData = config.inputGridData();
         grid = new Grid(gridData.width, gridData.height, gridData.isToroidal);
-        grid->initCellsRandom();  // Initialisation aléatoire
+        grid->initCellsRandom();
     }
     
     this->setGrid(grid);
-    this->inputGridToroidal();
-    this->inputEvolutionStrategy();
-    this->inputIterationInfo();
-    this->inputRenderer();
+    config.inputGridToroidal();
+    
+    // Configurer l'evolution strategy
+    string strategyChoice = config.inputEvolutionStrategy();
+    IEvolutionStrategy* strategy = (strategyChoice == "1") 
+        ? static_cast<IEvolutionStrategy*>(new HighLifeEvolution()) 
+        : static_cast<IEvolutionStrategy*>(new ClassicEvolution());
+    this->setEvolutionStrategy(strategy);
+    
+    this->setNumberOfIterations(config.inputIterationNumber());
+    this->setIterationDelay(config.inputIterationDelay());
+
+    // Configurer le renderer
+    string rendererChoice = config.inputRenderer();
+    IRenderer* renderer = (rendererChoice == "1") 
+        ? static_cast<IRenderer*>(new GraphicRenderer()) 
+        : static_cast<IRenderer*>(new ConsoleRenderer());
+    this->setRenderer(renderer);
 
     auto rendererPtr = std::shared_ptr<Observer>(renderer, [](Observer*){});
     auto fileHandlerPtr = std::shared_ptr<Observer>(fileHandler, [](Observer*){});
-
+    
     this->attach(rendererPtr);
     this->attach(fileHandlerPtr);
 }
@@ -72,100 +86,6 @@ void Game::displaySettings(string filename, Grid *grid)
     cout << "Fetched grid: ";
     grid->printCells();
 }
-
-// TODO: make this a template
-template <typename T>
-T Game::inputLogic(const string& question, const T& defaultValue, vector<T> validResponses, inputType inputType) {
-    T response;
-    bool validInput = false;
-
-    do {
-        cout << question;
-        string input;
-        getline(cin, input);
-
-        // Trim l'input
-        input.erase(0, input.find_first_not_of(' '));
-        input.erase(input.find_last_not_of(' ') + 1);
-
-        // Vérifier si l'input est vide ou ne contient que des espaces
-        if (input.empty() || input.find_first_not_of(" \t") == string::npos) {
-            cout << "Input cannot be empty. Please try again.\n";
-            continue;  // Retourne au début de la boucle
-        }
-
-        try {
-            // Validation spécifique selon le type d'input
-            if constexpr (std::is_same_v<T, string>) {
-                if (inputType == inputType::inputFilename) {
-                    // Vérification que le fichier n'est pas que des espaces
-                    if (input.find_first_not_of(" \t") == string::npos) {
-                        throw runtime_error("Filename cannot be empty or only whitespace");
-                    }
-                    response = input;
-                    validInput = true;
-                }
-                else {
-                    // Pour les autres inputs string, vérifier si la réponse est valide
-                    if (!validResponses.empty() && 
-                        find(validResponses.begin(), validResponses.end(), input) == validResponses.end()) {
-                        throw runtime_error("Invalid input. Please choose from the available options.");
-                    }
-                    response = input;
-                    validInput = true;
-                }
-            }
-            else if constexpr (std::is_same_v<T, int>) {
-                // Vérifier que l'input ne contient que des chiffres
-                if (input.find_first_not_of("0123456789") != string::npos) {
-                    throw runtime_error("Please enter only numbers");
-                }
-                
-                int value = std::stoi(input);
-                
-                // Validation spécifique selon le type d'input
-                if (inputType == inputType::inputGridDataWidth) {
-                    if (value < 1 || value > 1000000) {
-                        throw runtime_error("Grid dimensions must be between 1 and 1000000");
-                    }
-                }
-                else if (inputType == inputType::inputGridDataHeight) {
-                    if (value < 1 || value > 1000000) {
-                        throw runtime_error("Grid dimensions must be between 1 and 1000000");
-                    }
-                }
-                else if (inputType == inputType::inputIterationNumber) {
-                    if (value < 1 || value > 1000000) {
-                        throw runtime_error("Value must be between 1 and 1000000");
-                    }
-                }
-                else if (inputType == inputType::inputIterationDelay) {
-                    if (value < 0 || value > 1000000) {
-                        throw runtime_error("Value must be between 0 and 1000000 (ms)");
-                    }
-                }
-                
-                response = value;
-                validInput = true;
-            }
-            else if constexpr (std::is_same_v<T, bool>) {
-                if (input != "y" && input != "n" && input != "Y" && input != "N") {
-                    throw runtime_error("Please enter y or n");
-                }
-                response = (input == "y" || input == "Y");
-                validInput = true;
-            }
-        }
-        catch (const exception& e) {
-            cout << e.what() << "\n";
-        }
-    } while (!validInput);
-
-    return response;
-}
-
-// TODO: make this a template
-
 
 void Game::run()
 {
@@ -191,7 +111,7 @@ void Game::run()
         }
 
         this->notify(); // notification des observers (renderer & filehandler)
-        std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(this->getIterationDelay())));
+        std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(this->getIterationDelay())));
     }
 
     std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(5000)));
@@ -230,28 +150,6 @@ void Game::setIterationDelay(int iterationDelay)
 }
 
 Game::Game() : 
-    questions{
-        {inputType::inputLoadChoice, "Do you want to load from file? (y/n): "},
-        {inputType::inputFilename, "Enter the name of the saved game file: "},
-        {inputType::inputGridDataWidth, "Enter grid width: "},
-        {inputType::inputGridDataHeight, "Enter grid height: "},
-        {inputType::inputGridToroidal, "Do you want a toroidal grid? (y/n): "},
-        {inputType::inputEvolutionStrategy, "Select evolution strategy (0 for basic, 1 for highlife): "},
-        {inputType::inputIterationNumber, "Enter number of iterations: "},
-        {inputType::inputIterationDelay, "Enter delay between iterations (ms): "},
-        {inputType::inputRenderer, "Select renderer (0 for console, 1 for graphical interface): "}
-    },
-    validResponses{
-        {inputType::inputLoadChoice, {"y", "n"}},
-        {inputType::inputFilename, {}},
-        {inputType::inputGridDataWidth, {}},
-        {inputType::inputGridDataHeight, {}},
-        {inputType::inputGridToroidal, {"y", "n"}},
-        {inputType::inputEvolutionStrategy, {"0", "1"}},
-        {inputType::inputRenderer, {"0", "1"}},
-        {inputType::inputIterationNumber, {}},
-        {inputType::inputIterationDelay, {}}
-    },
     grid(nullptr),
     renderer(nullptr),
     currentState(nullptr),
@@ -263,102 +161,6 @@ Game::Game() :
     isGameOver(false)
 {
     // Reste du constructeur si nécessaire
-}
-string Game::inputLoadChoice() {
-    return inputLogic<string>(
-        questions.at(inputType::inputLoadChoice),
-        "n",
-        validResponses.at(inputType::inputLoadChoice),
-        inputType::inputLoadChoice
-    );
-}
-
-string Game::inputFilename() {
-    return inputLogic<string>(
-        questions.at(inputType::inputFilename),
-        "",
-        validResponses.at(inputType::inputFilename),
-        inputType::inputFilename
-    );
-}   
-
-GridData Game::inputGridData() {
-    GridData data;
-    data.width = inputLogic<int>(
-        questions.at(inputType::inputGridDataWidth),
-        10,
-        vector<int>{},
-        inputType::inputGridDataWidth
-    );
-    
-    data.height = inputLogic<int>(
-        questions.at(inputType::inputGridDataHeight),
-        10,
-        vector<int>{},
-        inputType::inputGridDataHeight
-    );
-    return data;
-}
-
-bool Game::inputGridToroidal() {
-    string toroidal = inputLogic<string>(
-        questions.at(inputType::inputGridToroidal),
-        "n",
-        validResponses.at(inputType::inputGridToroidal),
-        inputType::inputGridToroidal
-    );
-    return (toroidal == "y");
-}
-
-
-void Game::inputEvolutionStrategy() {
-    string choice = inputLogic<string>(
-        questions.at(inputType::inputEvolutionStrategy),
-        "0",
-        validResponses.at(inputType::inputEvolutionStrategy),
-        inputType::inputEvolutionStrategy
-    );
-    
-    if (choice == "0") {
-        this->setEvolutionStrategy(new ClassicEvolution());
-    } else {
-        this->setEvolutionStrategy(new HighLifeEvolution());
-    }
-}
-
-void Game::inputRenderer() {
-    string choice = inputLogic<string>(
-        questions.at(inputType::inputRenderer),
-        "0",
-        validResponses.at(inputType::inputRenderer),
-        inputType::inputRenderer
-    );
-    
-    if (choice == "0") {
-        this->setRenderer(new ConsoleRenderer());
-    } else {
-        this->setRenderer(new GraphicRenderer());
-    }
-}
-
-void Game::inputIterationInfo() {
-    this->setNumberOfIterations(
-        inputLogic<int>(
-            questions.at(inputType::inputIterationNumber),
-            100,
-            vector<int>{},
-            inputType::inputIterationNumber
-        )
-    );
-    
-    this->setIterationDelay(
-        inputLogic<int>(
-            questions.at(inputType::inputIterationDelay),
-            100,
-            vector<int>{},
-            inputType::inputIterationDelay
-        )
-    );
 }
 
 void Game::setNumberOfIterations(int iterations)
@@ -376,7 +178,7 @@ IEvolutionStrategy *Game::getEvolutionStrategy() const
     return evolutionStrategy;
 }
 
-float Game::getIterationDelay() const
+int Game::getIterationDelay() const
 { // TODO: int
     return this->iterationDelay;
 }

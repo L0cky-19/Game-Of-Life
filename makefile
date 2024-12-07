@@ -21,6 +21,7 @@ SRCS = $(SRC_DIR)/main.cpp \
        $(SRC_DIR)/game-state/PlayState.cpp \
        $(SRC_DIR)/game-state/PauseState.cpp \
 	   $(SRC_DIR)/file-handler/FileHandler.cpp \
+	   $(SRC_DIR)/input/Config.cpp \
 
 # Génération des chemins des fichiers objets dans build/
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
@@ -37,7 +38,8 @@ all: create_dirs $(TARGET)
 BUILD_DIRS = $(BUILD_DIR) \
              $(BUILD_DIR)/renderer \
              $(BUILD_DIR)/game-state \
-             $(BUILD_DIR)/evolution-strategy
+             $(BUILD_DIR)/evolution-strategy \
+			 $(BUILD_DIR)/input
 
 create_dirs:
 	@if not exist "$(BUILD_DIR)" mkdir "$(BUILD_DIR)"
@@ -45,7 +47,7 @@ create_dirs:
 	@if not exist "$(BUILD_DIR)\game-state" mkdir "$(BUILD_DIR)\game-state"
 	@if not exist "$(BUILD_DIR)\evolution-strategy" mkdir "$(BUILD_DIR)\evolution-strategy"
 	@if not exist "$(BUILD_DIR)\file-handler" mkdir "$(BUILD_DIR)\file-handler"
-
+	@if not exist "$(BUILD_DIR)\input" mkdir "$(BUILD_DIR)\input"
 # Création de l'exécutable
 $(TARGET): $(OBJS)
 	$(CXX) $(OBJS) -o $(TARGET) $(LDFLAGS) $(LIBS)

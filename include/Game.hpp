@@ -8,31 +8,12 @@
 #include "./file-handler/FileHandler.hpp"
 #include "./game-state/GameState.hpp"
 #include "./renderer/Subject.hpp"
-
-struct GridData // todo: voir si on le deplace dans grid peut être?
-{
-    int height;
-    int width;
-    bool isToroidal;
-};
-
-enum class inputType {
-    inputLoadChoice,
-    inputFilename,
-    inputGridDataWidth,
-    inputGridDataHeight,
-    inputGridToroidal,
-    inputEvolutionStrategy,
-    inputRenderer,
-    inputIterationNumber,
-    inputIterationDelay,
-};
+#include "./input/Config.hpp"
 
 class Game : public Subject
 {
 private:
-    const map<inputType, string> questions;
-    const map<inputType, vector<string>> validResponses;
+    Config config;
 
 protected: // TODO: why protected?
     Grid *grid;
@@ -40,7 +21,7 @@ protected: // TODO: why protected?
     GameState *currentState;
     IEvolutionStrategy *evolutionStrategy;
     FileHandler *fileHandler; //TODO: besoin ici d'être attaché?
-    float iterationDelay;
+    int iterationDelay;
     int numberOfIterations;
 
 public:
@@ -48,7 +29,7 @@ public:
     bool isGameOver;
     bool isFileLoaded = false;
 
-    Game(/*std::string filename*/);
+    Game();
 
     void run();
     void setup();
@@ -77,7 +58,7 @@ public:
     // getters
     IRenderer *getRenderer() const;
     IEvolutionStrategy *getEvolutionStrategy() const;
-    float getIterationDelay() const;
+    int getIterationDelay() const;
     Grid *getGrid() const;
     FileHandler *getFileHandler() const;
     int getNumberOfIterations() const;
@@ -89,11 +70,4 @@ public:
         delete evolutionStrategy;
         delete fileHandler;
     }
-
-
-
-    template <typename T>
-    T inputLogic(const string& question, const T& defaultValue, vector<T> validResponses, inputType inputType);
-
-
 };
