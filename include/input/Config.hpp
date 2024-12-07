@@ -6,6 +6,9 @@
 #include "InputHandler.hpp"
 #include <memory>
 
+// Forward declaration
+class Game;
+
 using namespace std;
 
 struct GridData {
@@ -22,7 +25,8 @@ private:
 
 public:
     Config();
-    
+    void setup(Game *game);
+
     template<typename T>
     T getInput(inputType type, const T& defaultValue) {
         return inputHandler->handleInput(

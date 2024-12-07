@@ -23,50 +23,7 @@ using namespace std;
 // TODO: make file handler a subject
 void Game::setup()
 {
-    cout << "=== Evolution Simulation Settings ===\n";
-
-    string loadChoice = config.inputLoadChoice();
-    FileHandler *filehandler = new FileHandler();
-    this->setFileHandler(filehandler);
-    
-    Grid* grid;
-    if (loadChoice == "y") {
-        string filename = config.inputFilename();
-        GridDimensions dims = filehandler->loadDimensions(filename);
-        vector<vector<int>> fetchedCells = filehandler->loadInputFromFile(filename);
-        grid = new Grid(dims.width, dims.height, true);
-        grid->initCells(fetchedCells);
-    } else {
-        GridData gridData = config.inputGridData();
-        grid = new Grid(gridData.width, gridData.height, gridData.isToroidal);
-        grid->initCellsRandom();
-    }
-    
-    this->setGrid(grid);
-    config.inputGridToroidal();
-    
-    // Configurer l'evolution strategy
-    string strategyChoice = config.inputEvolutionStrategy();
-    IEvolutionStrategy* strategy = (strategyChoice == "1") 
-        ? static_cast<IEvolutionStrategy*>(new HighLifeEvolution()) 
-        : static_cast<IEvolutionStrategy*>(new ClassicEvolution());
-    this->setEvolutionStrategy(strategy);
-    
-    this->setNumberOfIterations(config.inputIterationNumber());
-    this->setIterationDelay(config.inputIterationDelay());
-
-    // Configurer le renderer
-    string rendererChoice = config.inputRenderer();
-    IRenderer* renderer = (rendererChoice == "1") 
-        ? static_cast<IRenderer*>(new GraphicRenderer()) 
-        : static_cast<IRenderer*>(new ConsoleRenderer());
-    this->setRenderer(renderer);
-
-    auto rendererPtr = std::shared_ptr<Observer>(renderer, [](Observer*){});
-    auto fileHandlerPtr = std::shared_ptr<Observer>(fileHandler, [](Observer*){});
-    
-    this->attach(rendererPtr);
-    this->attach(fileHandlerPtr);
+    config.setup(this);
 }
 
 void Game::displaySettings(string filename, Grid *grid)
