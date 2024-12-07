@@ -35,6 +35,7 @@ void Game::setup()
         vector<vector<int>> fetchedCells = filehandler->loadInputFromFile(filename);
         grid = new Grid(dims.width, dims.height, true);  // TODO: gérer isToroidal depuis le fichier
         grid->initCells(fetchedCells);
+        
     } else {
         GridData gridData = this->inputGridData();
         grid = new Grid(gridData.width, gridData.height, gridData.isToroidal);
@@ -42,6 +43,7 @@ void Game::setup()
     }
     
     this->setGrid(grid);
+    this->inputGridToroidal();
     this->inputEvolutionStrategy();
     this->inputIterationInfo();
     this->inputRenderer();
@@ -233,7 +235,7 @@ Game::Game() :
         {inputType::inputFilename, "Enter the name of the saved game file: "},
         {inputType::inputGridDataWidth, "Enter grid width: "},
         {inputType::inputGridDataHeight, "Enter grid height: "},
-        {inputType::inputGridDataToroidal, "Do you want a toroidal grid? (y/n): "},
+        {inputType::inputGridToroidal, "Do you want a toroidal grid? (y/n): "},
         {inputType::inputEvolutionStrategy, "Select evolution strategy (0 for basic, 1 for highlife): "},
         {inputType::inputIterationNumber, "Enter number of iterations: "},
         {inputType::inputIterationDelay, "Enter delay between iterations (ms): "},
@@ -244,7 +246,7 @@ Game::Game() :
         {inputType::inputFilename, {}},
         {inputType::inputGridDataWidth, {}},
         {inputType::inputGridDataHeight, {}},
-        {inputType::inputGridDataToroidal, {"y", "n"}},
+        {inputType::inputGridToroidal, {"y", "n"}},
         {inputType::inputEvolutionStrategy, {"0", "1"}},
         {inputType::inputRenderer, {"0", "1"}},
         {inputType::inputIterationNumber, {}},
@@ -295,18 +297,19 @@ GridData Game::inputGridData() {
         vector<int>{},
         inputType::inputGridDataHeight
     );
-
-    // Validation toroidal oui/non
-    string toroidal = inputLogic<string>(
-        questions.at(inputType::inputGridDataToroidal),
-        "n",
-        validResponses.at(inputType::inputGridDataToroidal),
-        inputType::inputGridDataToroidal
-    );
-    data.isToroidal = (toroidal == "y");
-
     return data;
 }
+
+bool Game::inputGridToroidal() {
+    string toroidal = inputLogic<string>(
+        questions.at(inputType::inputGridToroidal),
+        "n",
+        validResponses.at(inputType::inputGridToroidal),
+        inputType::inputGridToroidal
+    );
+    return (toroidal == "y");
+}
+
 
 void Game::inputEvolutionStrategy() {
     string choice = inputLogic<string>(

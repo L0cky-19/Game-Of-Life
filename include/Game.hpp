@@ -21,11 +21,11 @@ enum class inputType {
     inputFilename,
     inputGridDataWidth,
     inputGridDataHeight,
-    inputGridDataToroidal,
+    inputGridToroidal,
     inputEvolutionStrategy,
     inputRenderer,
     inputIterationNumber,
-    inputIterationDelay
+    inputIterationDelay,
 };
 
 class Game : public Subject
@@ -68,6 +68,7 @@ public:
     string inputLoadChoice(); // returns -1 if new game & text if he loads
     string inputFilename();
     GridData inputGridData(); // returns width height and todoidal or not
+    bool inputGridToroidal();
     void inputEvolutionStrategy();
     void inputRenderer();
     void inputIterationInfo();
