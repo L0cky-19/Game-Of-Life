@@ -139,7 +139,7 @@ T Game::inputLogic(const string& question, const T& defaultValue, vector<T> vali
                 }
                 else if (inputType == inputType::inputIterationDelay) {
                     if (value < 0 || value > 1000000) {
-                        throw runtime_error("Value must be between 0 and 1000000");
+                        throw runtime_error("Value must be between 0 and 1000000 (ms)");
                     }
                 }
                 
@@ -236,7 +236,7 @@ Game::Game() :
         {inputType::inputGridDataToroidal, "Do you want a toroidal grid? (y/n): "},
         {inputType::inputEvolutionStrategy, "Select evolution strategy (0 for basic, 1 for highlife): "},
         {inputType::inputIterationNumber, "Enter number of iterations: "},
-        {inputType::inputIterationDelay, "Enter delay between iterations: "},
+        {inputType::inputIterationDelay, "Enter delay between iterations (ms): "},
         {inputType::inputRenderer, "Select renderer (0 for console, 1 for graphical interface): "}
     },
     validResponses{
