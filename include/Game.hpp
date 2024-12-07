@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <map>
+#include <vector>
 
 #include "./renderer/IRenderer.hpp"
 #include "./evolution-strategy/IEvolutionStrategy.hpp"
@@ -14,8 +16,21 @@ struct GridData // todo: voir si on le deplace dans grid peut être?
     bool isToroidal;
 };
 
+enum class inputType {
+    inputLoadChoice,
+    inputFilename,
+    inputGridData,
+    inputEvolutionStrategy,
+    inputRenderer,
+    inputIterationInfo
+};
+
 class Game : public Subject
 {
+private:
+    const map<inputType, string> questions;
+    const map<inputType, vector<string>> validResponses;
+
 protected: // TODO: why protected?
     Grid *grid;
     IRenderer *renderer;
@@ -48,6 +63,7 @@ public:
 
     // todo: maybe export these to a config class?
     string inputLoadChoice(); // returns -1 if new game & text if he loads
+    string inputFilename();
     GridData inputGridData(); // returns width height and todoidal or not
     void inputEvolutionStrategy();
     void inputRenderer();
@@ -69,4 +85,11 @@ public:
         delete evolutionStrategy;
         delete fileHandler;
     }
+
+
+
+    template <typename T>
+    T inputLogic(const string& question, const T& defaultValue, vector<T> validResponses, inputType inputType);
+
+
 };
