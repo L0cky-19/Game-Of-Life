@@ -78,6 +78,7 @@
         "iomanip": "cpp",
         "sstream": "cpp",
         "list": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "*.tpp": "cpp"
     }
 }
