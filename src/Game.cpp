@@ -231,12 +231,12 @@ Game::Game() :
     questions{
         {inputType::inputLoadChoice, "Do you want to load from file? (y/n): "},
         {inputType::inputFilename, "Enter the name of the saved game file: "},
-        {inputType::inputGridDataWidth, "Enter grid width (1-1000000): "},
+        {inputType::inputGridDataWidth, "Enter grid width: "},
         {inputType::inputGridDataHeight, "Enter grid height: "},
         {inputType::inputGridDataToroidal, "Do you want a toroidal grid? (y/n): "},
         {inputType::inputEvolutionStrategy, "Select evolution strategy (0 for basic, 1 for highlife): "},
         {inputType::inputIterationNumber, "Enter number of iterations: "},
-        {inputType::inputIterationDelay, "Enter delay between iterations (ms, 0-1000000): "},
+        {inputType::inputIterationDelay, "Enter delay between iterations: "},
         {inputType::inputRenderer, "Select renderer (0 for console, 1 for graphical interface): "}
     },
     validResponses{
