@@ -157,3 +157,5 @@ int Config::inputIterationDelay() {
         inputType::inputIterationDelay
     );
 }
+
+Config::~Config() {}

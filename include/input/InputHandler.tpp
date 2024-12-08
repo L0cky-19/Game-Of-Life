@@ -36,7 +36,7 @@ T InputHandler::handleInput(const string& question, const T& defaultValue, vecto
                 }
                 else {
                     // Pour les autres inputs string, vérifier si la réponse est valide
-                    if (!validResponses.empty() && 
+                    if (!validResponses.empty() &&
                         find(validResponses.begin(), validResponses.end(), input) == validResponses.end()) {
                         throw runtime_error("Invalid input. Please choose from the available options.");
                     }
@@ -49,18 +49,18 @@ T InputHandler::handleInput(const string& question, const T& defaultValue, vecto
                 if (input.find_first_not_of("0123456789") != string::npos) {
                     throw runtime_error("Please enter only numbers");
                 }
-                
+
                 int value = std::stoi(input);
-                
+
                 // Validation spécifique selon le type d'input
                 if (inputType == inputType::inputGridDataWidth) {
-                    if (value < 1 || value > 1000000) {
-                        throw runtime_error("Grid dimensions must be between 1 and 1000000");
+                    if (value < 1 || value > 300) {
+                        throw runtime_error("Grid dimensions must be between 1 and 300");
                     }
                 }
                 else if (inputType == inputType::inputGridDataHeight) {
-                    if (value < 1 || value > 1000000) {
-                        throw runtime_error("Grid dimensions must be between 1 and 1000000");
+                    if (value < 1 || value > 300) {
+                        throw runtime_error("Grid dimensions must be between 1 and 300");
                     }
                 }
                 else if (inputType == inputType::inputIterationNumber) {
@@ -73,7 +73,7 @@ T InputHandler::handleInput(const string& question, const T& defaultValue, vecto
                         throw runtime_error("Value must be between 0 and 1000000 (ms)");
                     }
                 }
-                
+
                 response = value;
                 validInput = true;
             }
