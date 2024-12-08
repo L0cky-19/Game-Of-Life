@@ -164,7 +164,6 @@ bool Grid::calculateNextGen(IEvolutionStrategy *evolutionStrategy)
 
     if (isGridStable(nextGen))
     {
-        std::cout << "Le jeu est stable" << std::endl;
         return true;
     }
 

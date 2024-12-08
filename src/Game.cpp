@@ -27,13 +27,15 @@ void Game::run()
         if (grid->calculateNextGen(evolutionStrategy))
         {
             gameIsRunning = false;
-            std::cout << "Fin du jeu - Grille stable" << std::endl;
+            std::cout << "\n========================================================\n";
+            std::cout << "\n\033[32mGame Over - Stable Grid\033[0m" << std::endl << std::endl;
             break;
         }
         if (iterationCounter > maxIterations)
         {
             gameIsRunning = false;
-            std::cout << "Fin du jeu - Nombre maximum d'itérations atteint" << std::endl;
+            std::cout << "\n========================================================\n";
+            std::cout << "\n\033[32mGame Over - Maximum Number of Iterations Reached\033[0m" << std::endl << std::endl;
             break;
         }
 
@@ -41,9 +43,7 @@ void Game::run()
         std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(this->getIterationDelay())));
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(5000)));
-    cout << "\n"
-         << "Fin de la partie" << endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(3000)));
 }
 
 

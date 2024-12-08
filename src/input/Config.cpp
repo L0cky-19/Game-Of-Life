@@ -8,15 +8,15 @@
 
 Config::Config() :
     questions{
-        {inputType::inputLoadChoice, "Do you want to load from file? (y/n): "},
-        {inputType::inputFilename, "Enter the name of the saved game file: "},
-        {inputType::inputGridDataWidth, "Enter grid width: "},
-        {inputType::inputGridDataHeight, "Enter grid height: "},
-        {inputType::inputGridToroidal, "Do you want a toroidal grid? (y/n): "},
-        {inputType::inputEvolutionStrategy, "Select evolution strategy (0 for basic, 1 for highlife): "},
-        {inputType::inputRenderer, "Select renderer (0 for console, 1 for graphical interface): "},
-        {inputType::inputIterationNumber, "Enter number of iterations: "},
-        {inputType::inputIterationDelay, "Enter delay between iterations (ms): "}
+        {inputType::inputLoadChoice, "\033[31mDo you want to load from file?\033[0m (y/n): "},
+        {inputType::inputFilename, "\033[31mEnter the name of the saved game file:\033[0m "},
+        {inputType::inputGridDataWidth, "\033[31mEnter grid width:\033[0m "},
+        {inputType::inputGridDataHeight, "\033[31mEnter grid height:\033[0m "},
+        {inputType::inputGridToroidal, "\033[31mDo you want a toroidal grid?\033[0m (y/n): "},
+        {inputType::inputEvolutionStrategy, "\033[31mSelect evolution strategy:\033[0m (0 for basic, 1 for highlife): "},
+        {inputType::inputRenderer, "\033[31mSelect renderer\033[0m (0 for console, 1 for graphical interface): "},
+        {inputType::inputIterationNumber, "\033[31mEnter number of iterations:\033[0m "},
+        {inputType::inputIterationDelay, "\033[31mEnter delay between iterations:\033[0m (ms) "}
     },
     validResponses{
         {inputType::inputLoadChoice, {"y", "n"}},
@@ -32,7 +32,9 @@ Config::Config() :
     inputHandler(make_unique<InputHandler>()){}
 
 void Config::setup(Game *game) {
-    cout << "=== Evolution Simulation Settings ===\n";
+    system("cls");
+    cout << "\033[32mWelcome to Conway's Game of Life! \n\033[0m\n";
+    cout << "========================================================\n";
 
     string loadChoice = inputLoadChoice();
     FileHandler *filehandler = new FileHandler();

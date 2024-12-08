@@ -16,9 +16,9 @@ void ConsoleRenderer::render(Grid *grid) {
         for (int x = 0; x < grid->getWidth(); x++)
         {
             if (cells[y][x].getType() == CellType::Alive)
-                std::cout << "1 ";
+                std::cout << "\033[32m1 \033[0m";
             else if (cells[y][x].getType() == CellType::Obstacle)
-                std::cout << "X ";
+                std::cout << "\033[31mX \033[0m";
             else
             {
                 std::cout << "0 ";
@@ -26,7 +26,6 @@ void ConsoleRenderer::render(Grid *grid) {
         }
         std::cout << std::endl;
     }
-    std::cout << std::endl;
 }
 
 string ConsoleRenderer::getName() const {

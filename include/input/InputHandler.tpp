@@ -9,7 +9,7 @@ T InputHandler::handleInput(const string& question, const T& defaultValue, vecto
     bool validInput = false;
 
     do {
-        cout << question;
+        cout << "\n" << question;
         string input;
         getline(cin, input);
 
