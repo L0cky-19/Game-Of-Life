@@ -9,7 +9,7 @@
 Config::Config() :
     questions{
         {inputType::inputLoadChoice, "\033[31mDo you want to load from file?\033[0m (y/n): "},
-        {inputType::inputFilename, "\033[31mEnter the name of the saved game file:\033[0m "},
+        {inputType::inputFilename, "\033[31mEnter the name of the saved game file or select a pattern: (0: dying, 1: glider-gun, 2: glider, 3: oscillator, 4: spaceship , 5: stable)\033[0m "},
         {inputType::inputGridDataWidth, "\033[31mEnter grid width:\033[0m "},
         {inputType::inputGridDataHeight, "\033[31mEnter grid height:\033[0m "},
         {inputType::inputGridToroidal, "\033[31mDo you want a toroidal grid?\033[0m (y/n): "},
@@ -20,7 +20,7 @@ Config::Config() :
     },
     validResponses{
         {inputType::inputLoadChoice, {"y", "n"}},
-        {inputType::inputFilename, {}},
+        {inputType::inputFilename, {"0", "1", "2", "3", "4", "5"}},
         {inputType::inputGridDataWidth, {}},
         {inputType::inputGridDataHeight, {}},
         {inputType::inputGridToroidal, {"y", "n"}},
@@ -42,6 +42,19 @@ void Config::setup(Game *game) {
     Grid* grid;
     if (loadChoice == "y") {
         string filename = inputFilename();
+        if (filename=="0"){
+            filename = "assets/patterns/dying.txt";
+        } else if (filename=="1"){
+            filename = "assets/patterns/glider-gun.txt";
+        } else if (filename=="2"){
+            filename = "assets/patterns/glider.txt";
+        } else if (filename=="3"){
+            filename = "assets/patterns/oscillator.txt";
+        } else if (filename=="4"){
+            filename = "assets/patterns/spaceship.txt";
+        } else if (filename=="5"){
+            filename = "assets/patterns/stable.txt";
+        }
         GridDimensions dims = filehandler->loadDimensions(filename);
         vector<vector<int>> fetchedCells = filehandler->loadInputFromFile(filename);
         grid = new Grid(dims.width, dims.height);
