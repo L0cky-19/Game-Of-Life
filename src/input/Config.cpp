@@ -65,7 +65,7 @@ void Config::setup(Game *game) {
                 grid->initCells(fetchedCells);
                 validFile = true;
             } catch (const runtime_error& e) {
-                cout << "\033[31mErreur : " << e.what() << "\033[0m\n";
+                cout << e.what() << "\033[0m\n";
             }
         }
     } else {
