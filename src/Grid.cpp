@@ -1,5 +1,6 @@
 #include "../include/Grid.hpp"
 #include "../include/Cell.hpp"
+#include "../include/evolution-strategy/ClassicEvolution.hpp"
 #include <cstdlib>
 #include <ctime>
 #include <vector>
