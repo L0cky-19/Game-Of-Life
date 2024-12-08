@@ -40,4 +40,5 @@ public:
     string inputRenderer();
     int inputIterationNumber();
     int inputIterationDelay();
+    ~Config();
 };
