@@ -1,5 +1,6 @@
 #include "../../include/renderer/GraphicRenderer.hpp"
 #include "../../include/Grid.hpp"
+#include "../../include/Game.hpp"
 #include <iostream>
 
 GraphicRenderer::GraphicRenderer()
@@ -20,9 +21,12 @@ GraphicRenderer::GraphicRenderer()
 
 void GraphicRenderer::update(Subject *subject)
 {
-    if (Grid *grid = dynamic_cast<Grid *>(subject))
-    {
-        render(grid);
+    Game *game = dynamic_cast<Game*>(subject); //TODO: same function for both, define in interface?
+    if (game) {
+        render(game->getGrid());
+    } else {
+        // Handle the case where the subject is not a Game
+        std::cerr << "Error: Subject is not of type Game." << std::endl;
     }
 }
 
@@ -41,14 +45,23 @@ void GraphicRenderer::render(Grid *grid)
         }
     }
 
-    const int cellSize = 20;
+
+    // Calculate the maximum cell size to fit the grid within the window, considering padding
+    const int maxCellSizeX = (window.getSize().x) / grid->getWidth();
+    const int maxCellSizeY = (window.getSize().y) / grid->getHeight();
+    const int cellSize = std::min(maxCellSizeX, maxCellSizeY); // Use the smaller size to ensure it fits
+
     const auto &cells = grid->getCells();
+    // Calculate the starting position to center the grid with padding
+    int startX = (window.getSize().x - (grid->getWidth() * cellSize)) / 2;
+    int startY = (window.getSize().y - (grid->getHeight() * cellSize)) / 2;
+
     for (int y = 0; y < grid->getHeight(); y++)
     {
         for (int x = 0; x < grid->getWidth(); x++)
         {
             sf::RectangleShape cell(sf::Vector2f(cellSize - 1, cellSize - 1));
-            cell.setPosition(x * cellSize, y * cellSize);
+            cell.setPosition(startX + x * cellSize, startY + y * cellSize); // Adjusted position
 
             if (cells[y][x].getType() == TypeCell::Alive)
                 cell.setFillColor(sf::Color::Black);

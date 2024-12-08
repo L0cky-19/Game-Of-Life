@@ -11,4 +11,5 @@ public:
     HighLifeEvolution();
     bool evolve(Cell* cell, int liveNeighbors) const override;
     string getName() const override;
+    virtual ~HighLifeEvolution() override = default;
 };

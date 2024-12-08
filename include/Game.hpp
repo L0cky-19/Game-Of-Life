@@ -1,27 +1,27 @@
 #pragma once
 #include <string>
+#include <map>
+#include <vector>
 
 #include "./renderer/IRenderer.hpp"
 #include "./evolution-strategy/IEvolutionStrategy.hpp"
 #include "./file-handler/FileHandler.hpp"
 #include "./game-state/GameState.hpp"
+#include "./renderer/Subject.hpp"
+#include "./input/Config.hpp"
 
-struct GridData // todo: voir si on le deplace dans grid peut être?
+class Game : public Subject
 {
-    int height;
-    int width;
-    bool isToroidal;
-};
+private:
+    Config config;
 
-class Game
-{
 protected: // TODO: why protected?
     Grid *grid;
     IRenderer *renderer;
     GameState *currentState;
     IEvolutionStrategy *evolutionStrategy;
-    FileHandler *fileHandler;
-    float iterationDelay;
+    FileHandler *fileHandler; //TODO: besoin ici d'être attaché?
+    int iterationDelay;
     int numberOfIterations;
 
 public:
@@ -29,7 +29,7 @@ public:
     bool isGameOver;
     bool isFileLoaded = false;
 
-    Game(/*std::string filename*/);
+    Game();
 
     void run();
     void setup();
@@ -47,7 +47,9 @@ public:
 
     // todo: maybe export these to a config class?
     string inputLoadChoice(); // returns -1 if new game & text if he loads
+    string inputFilename();
     GridData inputGridData(); // returns width height and todoidal or not
+    bool inputGridToroidal();
     void inputEvolutionStrategy();
     void inputRenderer();
     void inputIterationInfo();
@@ -56,8 +58,16 @@ public:
     // getters
     IRenderer *getRenderer() const;
     IEvolutionStrategy *getEvolutionStrategy() const;
-    float getIterationDelay() const;
+    int getIterationDelay() const;
     Grid *getGrid() const;
     FileHandler *getFileHandler() const;
     int getNumberOfIterations() const;
+
+    virtual ~Game() override {
+        delete grid;
+        delete renderer;
+        delete currentState;
+        delete evolutionStrategy;
+        delete fileHandler;
+    }
 };

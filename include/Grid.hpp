@@ -1,12 +1,11 @@
 #pragma once
 
 #include <vector>
-#include "./renderer/Subject.hpp" // Include Subject so Grid can inherit from it
 #include "Cell.hpp"
 #include "./evolution-strategy/IEvolutionStrategy.hpp"
 
-class Grid : public Subject
-{ // Now Grid inherits from Subject
+class Grid
+{
 private:
     std::vector<std::vector<Cell>> cells;
     int width;
@@ -31,7 +30,9 @@ public:
     const std::vector<std::vector<Cell>> &getCells() const { return cells; }
     int countLiveNeighbors(int x, int y);
     void printCells() const;
-    bool isGridStable(const std::vector<std::vector<TypeCell>> &nextGen) const;
+    bool isGridStable(const std::vector<std::vector<TypeCell>>& nextGen) const;
 
-    static void testCellBehavior();
+    virtual ~Grid() { // Supprimer le 'override' car Grid n'hérite de rien
+        cells.clear();
+    }
 };

@@ -11,6 +11,7 @@
 #include "../include/evolution-strategy/ClassicEvolution.hpp"
 #include "../include/renderer/ConsoleRenderer.hpp"
 #include "../include/renderer/GraphicRenderer.hpp"
+#include "../include/input/Config.hpp"
 using namespace std;
 
 // TODO: nombre d'iterations?
@@ -22,49 +23,7 @@ using namespace std;
 // TODO: make file handler a subject
 void Game::setup()
 {
-    cout << "=== Evolution Simulation Settings ===\n";
-
-    string filename = this->inputLoadChoice();
-    GridData gridData = this->inputGridData(); // FIXME: demander que la grid data quand filename.empty()
-    this->inputEvolutionStrategy();
-    this->inputIterationInfo();
-
-    FileHandler *filehandler = new FileHandler();
-    this->setFileHandler(filehandler); // needed ?
-
-    Grid *grid = new Grid(gridData.width, gridData.height, gridData.isToroidal);
-    if (filename.empty())
-    {
-        grid->initCellsRandom();
-    }
-    else
-    {
-        GridDimensions dims = filehandler->loadDimensions(filename);
-        gridData.width = dims.width;
-        gridData.height = dims.height;
-        cout << "Loaded dimensions - Width: " << dims.width << " Height: " << dims.height << endl;
-
-        vector<vector<int>> fetchedCells = filehandler->loadInputFromFile(filename);
-        cout << "Loaded grid:" << endl;
-        for (const auto &row : fetchedCells)
-        {
-            for (int cell : row)
-            {
-                cout << cell << " ";
-            }
-            cout << endl;
-        }
-
-        grid = new Grid(gridData.width, gridData.height, gridData.isToroidal);
-        grid->initCells(fetchedCells);
-    }
-    this->setGrid(grid);
-
-    // this->displaySettings(filename, grid);
-    this->inputRenderer();
-    // todo: subscribe / attach
-    // this->getGrid()->attach(this->getRenderer());
-    // this->getGrid()->attach(this->getFileHandler());
+    config.setup(this);
 }
 
 void Game::displaySettings(string filename, Grid *grid)
@@ -107,9 +66,9 @@ void Game::run()
             std::cout << "Fin du jeu - Nombre maximum d'itérations atteint" << std::endl;
             break;
         }
-        this->getRenderer()->render(grid);
-        this->getFileHandler()->saveGridToFile(grid);
-        std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(this->getIterationDelay())));
+
+        this->notify(); // notification des observers (renderer & filehandler)
+        std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(this->getIterationDelay())));
     }
 
     std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(5000)));
@@ -147,359 +106,18 @@ void Game::setIterationDelay(int iterationDelay)
     this->iterationDelay = iterationDelay;
 }
 
-Game::Game() {} // TODO: needed or not?
-
-string Game::inputLoadChoice()
+Game::Game() : 
+    grid(nullptr),
+    renderer(nullptr),
+    currentState(nullptr),
+    evolutionStrategy(nullptr),
+    fileHandler(nullptr),
+    iterationDelay(0),
+    numberOfIterations(0),
+    isPaused(false),
+    isGameOver(false)
 {
-    string loadChoice;
-    string filename;
-    isFileLoaded = false; // Initialisation par défaut
-
-    do
-    {
-        cout << "Do you want to load a saved game? (y/n): ";
-        getline(cin, loadChoice);
-
-        // Trim leading and trailing spaces
-        loadChoice.erase(0, loadChoice.find_first_not_of(' ')); // Trim leading spaces
-        loadChoice.erase(loadChoice.find_last_not_of(' ') + 1); // Trim trailing spaces
-
-        if (loadChoice.empty())
-        {
-            cout << "Please enter a valid input (y/n).\n";
-            continue;
-        }
-
-        if (loadChoice == "y" || loadChoice == "Y")
-        {
-            do
-            {
-                isFileLoaded = true; // On met à true seulement si l'utilisateur choisit de charger un fichier
-                cout << "Enter the name of the saved game file: ";
-                getline(cin, filename);
-
-                // Trim leading and trailing spaces
-                filename.erase(0, filename.find_first_not_of(' ')); // Trim leading spaces
-                filename.erase(filename.find_last_not_of(' ') + 1); // Trim trailing spaces
-
-                if (filename.empty())
-                {
-                    cout << "Please enter a valid filename.\n";
-                }
-            } while (filename.empty());
-            break;
-        }
-        else if (loadChoice == "n" || loadChoice == "N")
-        {
-            filename = "";
-            break;
-        }
-        else
-        {
-            cout << "Invalid input. Please enter y or n.\n";
-        }
-    } while (true);
-
-    return filename;
-}
-
-GridData Game::inputGridData()
-{
-    GridData gridData;
-    string toroidalInput;
-    bool validInput = false;
-
-    if (!isFileLoaded)
-    {
-        // Première boucle pour la largeur
-        do
-        {
-            cout << "Enter grid width: ";
-            string widthInput;
-            getline(cin, widthInput);
-
-            widthInput.erase(0, widthInput.find_first_not_of(" \t"));
-            widthInput.erase(widthInput.find_last_not_of(" \t") + 1);
-
-            // Vérifier que la chaîne ne contient que des chiffres
-            bool isNumber = !widthInput.empty() &&
-                            widthInput.find_first_not_of("0123456789") == string::npos;
-
-            try
-            {
-                if (!isNumber)
-                {
-                    throw invalid_argument("Not a number");
-                }
-                gridData.width = stoi(widthInput);
-                if (gridData.width < 0)
-                {
-                    cout << "Please enter a positive number.\n";
-                }
-                else
-                {
-                    validInput = true;
-                }
-            }
-            catch (const exception &)
-            {
-                cout << "Please enter a valid number.\n";
-            }
-        } while (!validInput);
-        // Réinitialiser validInput pour la hauteur
-        validInput = false;
-
-        // Deuxième boucle pour la hauteur
-        do
-        {
-            cout << "Enter grid height: ";
-            string heightInput;
-            getline(cin, heightInput);
-
-            heightInput.erase(0, heightInput.find_first_not_of(" \t"));
-            heightInput.erase(heightInput.find_last_not_of(" \t") + 1);
-
-            // Vérifier que la chaîne ne contient que des chiffres
-            bool isNumber = !heightInput.empty() && heightInput.find_first_not_of("0123456789") == string::npos;
-
-            try
-            {
-                if (!isNumber)
-                {
-                    throw invalid_argument("Not a number");
-                }
-                gridData.height = stoi(heightInput);
-                if (gridData.height < 0)
-                {
-                    cout << "Please enter a positive number.\n";
-                }
-                else
-                {
-                    validInput = true;
-                }
-            }
-            catch (const exception &)
-            {
-                cout << "Please enter a valid number.\n";
-            }
-        } while (!validInput);
-    }
-    else
-    {
-        gridData.width = 0;
-        gridData.height = 0;
-    }
-
-    validInput = false;
-
-    do
-    {
-        cout << "Is the grid toroidal? (y/n): ";
-        getline(cin, toroidalInput);
-
-        // Trim leading and trailing spaces
-        toroidalInput.erase(0, toroidalInput.find_first_not_of(' ')); // Trim leading spaces
-        toroidalInput.erase(toroidalInput.find_last_not_of(' ') + 1); // Trim trailing spaces
-
-        if (toroidalInput.empty())
-        {
-            cout << "Please enter a valid input.\n";
-        }
-        else if (toroidalInput == "y" || toroidalInput == "Y")
-        {
-            gridData.isToroidal = true;
-            validInput = true;
-        }
-        else if (toroidalInput == "n" || toroidalInput == "N")
-        {
-            gridData.isToroidal = false;
-            validInput = true;
-        }
-        else
-        {
-            cout << "Invalid input. Please enter y or n.\n";
-        }
-    } while (!validInput);
-
-    return gridData;
-}
-
-void Game::inputEvolutionStrategy()
-{
-    bool validInput = false;
-    int evolutionStrategy = 0; // Déclarer en dehors du try
-    do
-    {
-        cout << "Select evolution strategy (0 for basic, 1 for highlife): ";
-        string evolutionStrategyInput;
-        getline(cin, evolutionStrategyInput);
-
-        evolutionStrategyInput.erase(0, evolutionStrategyInput.find_first_not_of(" \t"));
-        evolutionStrategyInput.erase(evolutionStrategyInput.find_last_not_of(" \t") + 1);
-
-        // Vérifier que la chaîne ne contient que des chiffres
-        bool isNumber = !evolutionStrategyInput.empty() &&
-                        evolutionStrategyInput.find_first_not_of("0123456789") == string::npos;
-
-        try
-        {
-            if (!isNumber)
-            {
-                throw invalid_argument("Not a number");
-            }
-            evolutionStrategy = stoi(evolutionStrategyInput);
-            if (evolutionStrategy < 0 || evolutionStrategy > 1)
-            {
-                cout << "Please enter a valid number.\n";
-            }
-            else
-            {
-                validInput = true;
-            }
-        }
-        catch (const exception &)
-        {
-            cout << "Please enter a valid number.\n";
-        }
-    } while (!validInput);
-
-    if (evolutionStrategy == 0)
-    {
-        this->setEvolutionStrategy(new ClassicEvolution());
-    }
-    else
-    {
-        this->setEvolutionStrategy(new HighLifeEvolution());
-    }
-}
-
-void Game::inputRenderer()
-{
-    bool validInput = false;
-    int rendererChoice = 0; // Déclarer en dehors du try
-    do
-    {
-        cout << "Select renderer (0 for console, 1 for graphical interface): ";
-        string rendererInput;
-        getline(cin, rendererInput);
-
-        rendererInput.erase(0, rendererInput.find_first_not_of(" \t"));
-        rendererInput.erase(rendererInput.find_last_not_of(" \t") + 1);
-
-        // Vérifier que la chaîne ne contient que des chiffres
-        bool isNumber = !rendererInput.empty() &&
-                        rendererInput.find_first_not_of("0123456789") == string::npos;
-
-        try
-        {
-            if (!isNumber)
-            {
-                throw invalid_argument("Not a number");
-            }
-            rendererChoice = stoi(rendererInput);
-            if (rendererChoice < 0 || rendererChoice > 1)
-            {
-                cout << "Please enter a valid number.\n";
-            }
-            else
-            {
-                validInput = true;
-            }
-        }
-        catch (const exception &)
-        {
-            cout << "Please enter a valid number.\n";
-        }
-    } while (!validInput);
-
-    if (rendererChoice == 0)
-    {
-        this->setRenderer(new ConsoleRenderer());
-    }
-    else
-    {
-        this->setRenderer(new GraphicRenderer());
-    }
-}
-
-void Game::inputIterationInfo()
-{
-    bool validInput = false;
-    int iterationDelay = 0;
-    do
-    {
-        cout << "Select iteration delay in milliseconds: ";
-        string iterationDelayInput;
-        getline(cin, iterationDelayInput);
-
-        iterationDelayInput.erase(0, iterationDelayInput.find_first_not_of(" \t"));
-        iterationDelayInput.erase(iterationDelayInput.find_last_not_of(" \t") + 1);
-
-        bool isNumber = !iterationDelayInput.empty() &&
-                        iterationDelayInput.find_first_not_of("0123456789") == string::npos;
-
-        try
-        {
-            if (!isNumber)
-            {
-                throw invalid_argument("Not a number");
-            }
-            iterationDelay = stoi(iterationDelayInput);
-            if (iterationDelay < 0)
-            {
-                cout << "Please enter a valid number.\n";
-            }
-            else
-            {
-                validInput = true;
-            }
-        }
-        catch (const exception &)
-        {
-            cout << "Please enter a valid number.\n";
-        }
-    } while (!validInput);
-
-    validInput = false;
-    int numberOfIterations = 0;
-    do
-    {
-        cout << "Select number of iterations: ";
-        string numberOfIterationsInput;
-        getline(cin, numberOfIterationsInput);
-
-        numberOfIterationsInput.erase(0, numberOfIterationsInput.find_first_not_of(" \t"));
-        numberOfIterationsInput.erase(numberOfIterationsInput.find_last_not_of(" \t") + 1);
-
-        bool isNumber = !numberOfIterationsInput.empty() &&
-                        numberOfIterationsInput.find_first_not_of("0123456789") == string::npos;
-
-        try
-        {
-            if (!isNumber)
-            {
-                throw invalid_argument("Not a number");
-            }
-            numberOfIterations = stoi(numberOfIterationsInput);
-            if (numberOfIterations < 1)
-            {
-                cout << "Please enter a valid number.\n";
-            }
-            else
-            {
-                validInput = true;
-            }
-        }
-        catch (const exception &)
-        {
-            cout << "Please enter a valid number.\n";
-        }
-    } while (!validInput);
-
-    this->setNumberOfIterations(numberOfIterations);
-    std::cout << "Number of iterations: " << numberOfIterations << std::endl;
-    this->setIterationDelay(static_cast<float>(iterationDelay));
-    std::cout << "Iteration delay: " << iterationDelay << std::endl;
+    // Reste du constructeur si nécessaire
 }
 
 void Game::setNumberOfIterations(int iterations)
@@ -517,7 +135,7 @@ IEvolutionStrategy *Game::getEvolutionStrategy() const
     return evolutionStrategy;
 }
 
-float Game::getIterationDelay() const
+int Game::getIterationDelay() const
 { // TODO: int
     return this->iterationDelay;
 }
