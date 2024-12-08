@@ -1,28 +1,20 @@
 #pragma once
 #include <string>
-
 #include "../Grid.hpp"
 #include "../renderer/Observer.hpp"
-
 using namespace std;
 
-struct GridDimensions
-{
+struct GridDimensions {
     int width;
     int height;
 };
 
-class FileHandler : public Observer
-{
+class FileHandler : public Observer {
 public:
     FileHandler() = default;
-    virtual ~FileHandler() = default;
     GridDimensions loadDimensions(string filename);
-    vector<vector<int>> loadInputFromFile(string filename);
+    vector<vector<int>> loadInputFromFile(string filename); //TODO: check si l'implémentation est intelligente ou non
     void saveGridToFile(Grid *grid);
     void update(Subject* subject) override;
-    /*
-    Pattern loadPatternFromFile(string filename);
-    void savePatternToFile(Pattern pattern, string filename);
-    */
+    virtual ~FileHandler() = default;
 };

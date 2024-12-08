@@ -1,5 +1,4 @@
 #pragma once
-
 #include "IEvolutionStrategy.hpp"
 #include <string>
 using namespace std;

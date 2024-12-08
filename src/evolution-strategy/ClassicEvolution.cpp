@@ -1,29 +1,19 @@
 #include "../../include/evolution-strategy/ClassicEvolution.hpp"
 #include "../../include/Cell.hpp"
 
-bool ClassicEvolution::evolve(Cell *cell, int liveNeighbors) const
-{
-    if (cell == nullptr || cell->getType() == TypeCell::Obstacle)
-    {
+bool ClassicEvolution::evolve(Cell *cell, int liveNeighbors) const {
+    if (cell == nullptr || cell->getType() == TypeCell::Obstacle) {
         return false;
     }
-
-    if (cell->getType() == TypeCell::Alive)
-    {
-        // Classic Game of Life rules:
-        // A cell remains alive if it has 2 or 3 live neighbors.
+    if (cell->getType() == TypeCell::Alive) {
         return (liveNeighbors == 2 || liveNeighbors == 3);
-    }
-    else
-    {
-        // A dead cell becomes alive if it has exactly 3 live neighbors.
+    } else {
         return (liveNeighbors == 3);
     }
 }
 
-ClassicEvolution::ClassicEvolution() {}
+ClassicEvolution::ClassicEvolution() {} //TODO: needed?
 
-string ClassicEvolution::getName() const
-{
+string ClassicEvolution::getName() const {
     return "Classic";
 }

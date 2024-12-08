@@ -1,9 +1,9 @@
 #pragma once
 
-class Subject;  // Forward declaration
+class Subject;
 
 class Observer {
 public:
-    virtual ~Observer() = default;
     virtual void update(Subject* subject) = 0;
+    virtual ~Observer() = default;
 };
