@@ -5,6 +5,8 @@
 #include <ctime>
 #include <vector>
 #include <iostream>
+#include <thread>
+#include <mutex>
 using namespace std;
 
 Grid::Grid(int width, int height) : width(width), height(height) {}
@@ -115,31 +117,49 @@ bool Grid::isGridStable(const vector<vector<CellType>> &nextGen) const
 bool Grid::calculateNextGen(IEvolutionStrategy *evolutionStrategy)
 {
     vector<vector<CellType>> nextGen(height, vector<CellType>(width, CellType::Dead));
-    int neighbors = 0;
-    for (int y = 0; y < height; y++)
-    {
-        for (int x = 0; x < width; x++)
-        {
-            if (cells[y][x].getType() == CellType::Obstacle)
-            {
-                nextGen[y][x] = CellType::Obstacle;
-            }
-        }
-    }
+    int threadCount = std::thread::hardware_concurrency(); // Number of available threads
+    threadCount = threadCount > 0 ? threadCount : 4; // Fallback to 4 threads if detection fails
 
-    for (int y = 0; y < height; y++)
-    {
-        for (int x = 0; x < width; x++)
+    auto processChunk = [&](int startRow, int endRow) {
+        for (int y = startRow; y < endRow; y++)
         {
-            if (cells[y][x].getType() != CellType::Obstacle)
+            for (int x = 0; x < width; x++)
             {
-                neighbors = countLiveNeighbors(x, y);
-                if (evolutionStrategy->evolve(&cells[y][x], neighbors))
+                if (cells[y][x].getType() == CellType::Obstacle)
                 {
-                    nextGen[y][x] = CellType::Alive;
+                    nextGen[y][x] = CellType::Obstacle;
+                }
+                else
+                {
+                    int neighbors = countLiveNeighbors(x, y);
+                    if (evolutionStrategy->evolve(&cells[y][x], neighbors))
+                    {
+                        nextGen[y][x] = CellType::Alive;
+                    }
                 }
             }
         }
+    };
+
+    // Create threads and assign chunks
+    std::vector<std::thread> threads;
+    int rowsPerThread = height / threadCount;
+    int remainingRows = height % threadCount;
+
+    int currentRow = 0;
+    for (int i = 0; i < threadCount; ++i)
+    {
+        int startRow = currentRow;
+        int endRow = startRow + rowsPerThread + (remainingRows-- > 0 ? 1 : 0);
+        threads.emplace_back(processChunk, startRow, endRow);
+        currentRow = endRow;
+    }
+
+    // Join threads
+    for (auto &thread : threads)
+    {
+        if (thread.joinable())
+            thread.join();
     }
 
     if (isGridStable(nextGen))
@@ -155,6 +175,7 @@ bool Grid::calculateNextGen(IEvolutionStrategy *evolutionStrategy)
             cells[y][x].setType(nextGen[y][x]);
         }
     }
+
     return false;
 }
 
