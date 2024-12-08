@@ -41,24 +41,33 @@ void Config::setup(Game *game) {
 
     Grid* grid;
     if (loadChoice == "y") {
-        string filename = inputFilename();
-        if (filename=="0"){
-            filename = "assets/patterns/dying.txt";
-        } else if (filename=="1"){
-            filename = "assets/patterns/glider-gun.txt";
-        } else if (filename=="2"){
-            filename = "assets/patterns/glider.txt";
-        } else if (filename=="3"){
-            filename = "assets/patterns/oscillator.txt";
-        } else if (filename=="4"){
-            filename = "assets/patterns/spaceship.txt";
-        } else if (filename=="5"){
-            filename = "assets/patterns/stable.txt";
+        bool validFile = false;
+        string filename;
+        while (!validFile) {
+            try {
+                filename = inputFilename();
+                if (filename=="0"){
+                    filename = "assets/patterns/dying.txt";
+                } else if (filename=="1"){
+                    filename = "assets/patterns/glider-gun.txt";
+                } else if (filename=="2"){
+                    filename = "assets/patterns/glider.txt";
+                } else if (filename=="3"){
+                    filename = "assets/patterns/oscillator.txt";
+                } else if (filename=="4"){
+                    filename = "assets/patterns/spaceship.txt";
+                } else if (filename=="5"){
+                    filename = "assets/patterns/stable.txt";
+                }
+                GridDimensions dims = filehandler->loadDimensions(filename);
+                vector<vector<int>> fetchedCells = filehandler->loadInputFromFile(filename);
+                grid = new Grid(dims.width, dims.height);
+                grid->initCells(fetchedCells);
+                validFile = true;
+            } catch (const runtime_error& e) {
+                cout << e.what() << "\033[0m\n";
+            }
         }
-        GridDimensions dims = filehandler->loadDimensions(filename);
-        vector<vector<int>> fetchedCells = filehandler->loadInputFromFile(filename);
-        grid = new Grid(dims.width, dims.height);
-        grid->initCells(fetchedCells);
     } else {
         GridData gridData = inputGridData();
         grid = new Grid(gridData.width, gridData.height);
