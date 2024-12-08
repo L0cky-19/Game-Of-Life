@@ -1,6 +1,6 @@
 #pragma once
 
-enum class TypeCell { //TODO: rename
+enum class CellType {
     Alive,
     Dead,
     Obstacle
@@ -8,11 +8,11 @@ enum class TypeCell { //TODO: rename
 
 class Cell {
 private:
-    TypeCell type;
+    CellType type;
 public:
     Cell() = default;
-    Cell(TypeCell type);
-    TypeCell getType() const;
-    void setType(TypeCell newType);
+    Cell(CellType type);
+    CellType getType() const;
+    void setType(CellType newType);
     virtual ~Cell() = default;
 };

@@ -16,7 +16,7 @@ public:
     GraphicRenderer();
     void render(Grid* grid) override;
     void update(Subject* subject) override;
-    sf::RenderWindow& getWindow() { return window; } //TODO: put in cpp
+    sf::RenderWindow& getWindow();
     string getName() const override;
     virtual ~GraphicRenderer() override {
         if (window.isOpen()) {

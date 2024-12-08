@@ -23,11 +23,9 @@ SRCS = $(SRC_DIR)/main.cpp \
        $(SRC_DIR)/renderer/GraphicRenderer.cpp \
        $(SRC_DIR)/evolution-strategy/ClassicEvolution.cpp \
        $(SRC_DIR)/evolution-strategy/HighLifeEvolution.cpp \
-       $(SRC_DIR)/game-state/PlayState.cpp \
-       $(SRC_DIR)/game-state/PauseState.cpp \
        $(SRC_DIR)/file-handler/FileHandler.cpp \
        $(SRC_DIR)/input/Config.cpp \
-	   $(SRC_DIR)/renderer/Subject.cpp
+	   $(SRC_DIR)/observer-pattern/Subject.cpp
 
 
 # Fichiers pour les tests

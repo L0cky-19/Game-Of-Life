@@ -24,9 +24,9 @@ void ConsoleRenderer::render(Grid *grid) {
     {
         for (int x = 0; x < grid->getWidth(); x++)
         {
-            if (cells[y][x].getType() == TypeCell::Alive)
+            if (cells[y][x].getType() == CellType::Alive)
                 std::cout << "1 ";
-            else if (cells[y][x].getType() == TypeCell::Obstacle)
+            else if (cells[y][x].getType() == CellType::Obstacle)
                 std::cout << "X ";
             else
             {

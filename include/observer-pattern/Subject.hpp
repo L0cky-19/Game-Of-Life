@@ -1,9 +1,9 @@
+#pragma once
 #include <memory>
 #include "Observer.hpp"
 #include <vector>
-#pragma once
 
-class Subject { //TODO: export this design pattern
+class Subject {
 private:
     std::vector<std::shared_ptr<Observer>> observers;
 public:

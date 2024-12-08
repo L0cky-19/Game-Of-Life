@@ -1,5 +1,5 @@
 #pragma once
-#include "Observer.hpp"
+#include "../observer-pattern/Observer.hpp"
 #include "../Grid.hpp"
 #include <string>
 
