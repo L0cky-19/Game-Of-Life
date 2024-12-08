@@ -3,8 +3,6 @@
 #include "../include/evolution-strategy/ClassicEvolution.hpp"
 #include <iostream>
 
-// Macro pour une sortie colorée
-
 class GridTest : public ::testing::Test {
 protected:
     void SetUp() override {
@@ -18,9 +16,9 @@ TEST_F(GridTest, CellBirth)
 {
     Grid grid(3, 3, false);
     vector<vector<int>> testGrid = {
-        {0, 1, 0},  // Dead, Alive, Dead
-        {1, 1, 1},  // Alive, Alive, Alive
-        {0, 1, 0}}; // Dead, Alive, Dead
+        {1, 1, 0},
+        {1, 0, 0},
+        {0, 0, 0}};
 
     grid.initCells(testGrid);
     IEvolutionStrategy *strategy = new ClassicEvolution();
@@ -28,11 +26,11 @@ TEST_F(GridTest, CellBirth)
     grid.calculateNextGen(strategy);
     auto cells = grid.getCells();
 
-    // Expected result: all cells around center become alive, center dies
+    // Expected result: Center becomes alive due to having 3 neighbours
     vector<vector<int>> expectedGrid = {
-        {1, 1, 1}, // All alive due to having 3 neighbors
-        {1, 0, 1}, // Center dies due to having >3 neighbors
-        {1, 1, 1}};
+        {1, 1, 0},
+        {1, 1, 0},
+        {0, 0, 0}};
 
     // Verify each cell matches expected state
     bool allMatch = true; // Track if all cells match
@@ -52,14 +50,14 @@ TEST_F(GridTest, CellBirth)
     delete strategy;
 }
 
-// New test to check if a cell becomes alive properly
+
 TEST_F(GridTest, CellDeath)
 {
     Grid grid(3, 3, false);
     vector<vector<int>> testGrid = {
-        {0, 0, 0},  // All Dead
-        {0, 1, 0},  // Center Alive
-        {0, 0, 0}}; // All Dead
+        {0, 0, 0},
+        {0, 1, 0},
+        {0, 0, 0}};
 
     grid.initCells(testGrid);
     IEvolutionStrategy *strategy = new ClassicEvolution();
@@ -67,7 +65,7 @@ TEST_F(GridTest, CellDeath)
     grid.calculateNextGen(strategy);
     auto cells = grid.getCells();
 
-    // Expected result: cell dies as it has no neighbors
+    // Expected result: Center Cell dies as it has no neighbors
     vector<vector<int>> expectedGrid = {
         {0, 0, 0},
         {0, 0, 0},
