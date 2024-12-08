@@ -6,6 +6,12 @@
 GraphicRenderer::GraphicRenderer() : window(sf::VideoMode(800, 600), "Game of Life",sf::Style::Titlebar | sf::Style::Close), waitingForInput(false) {
     window.setFramerateLimit(60);
 
+    // Chargement et définition de l'icône
+    sf::Image icon;
+    if (icon.loadFromFile("assets/icon.png")) {
+        window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+    }
+
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
     {
         std::cout << "Erreur de chargement de la police" << std::endl;
@@ -20,7 +26,7 @@ GraphicRenderer::GraphicRenderer() : window(sf::VideoMode(800, 600), "Game of Li
 void GraphicRenderer::render(Grid *grid) {
     if (!grid)
         return;                     // Protection against null pointers
-    window.clear(sf::Color::White); // Clear the window
+    window.clear(sf::Color::Black); // Clear the window
 
     sf::Event event;
     while (window.pollEvent(event))
@@ -50,13 +56,13 @@ void GraphicRenderer::render(Grid *grid) {
             cell.setPosition(startX + x * cellSize, startY + y * cellSize); // Adjusted position
 
             if (cells[y][x].getType() == CellType::Alive)
-                cell.setFillColor(sf::Color::Black);
+                cell.setFillColor(sf::Color::Cyan);
             else if (cells[y][x].getType() == CellType::Obstacle)
                 cell.setFillColor(sf::Color::Red);
             else
-                cell.setFillColor(sf::Color::White);
+                cell.setFillColor(sf::Color(128, 128, 128));
 
-            cell.setOutlineColor(sf::Color(128, 128, 128));
+            cell.setOutlineColor(sf::Color::Black);
             cell.setOutlineThickness(1);
             window.draw(cell);
         }
