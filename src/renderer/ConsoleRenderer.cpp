@@ -5,7 +5,7 @@ using namespace std;
 
 
 void ConsoleRenderer::render(Grid *grid) {
-    system("cls"); // FIXME: detect os ? wont work for macos
+    system("cls");
 
     if (!grid)
         return;

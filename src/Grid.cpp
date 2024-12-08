@@ -11,7 +11,7 @@ using namespace std;
 
 Grid::Grid(int width, int height) : width(width), height(height) {}
 
-void Grid::initCells(const std::vector<std::vector<int>> &tab) { // FIXME: si on a plus de celules que dites ca va crash
+void Grid::initCells(const std::vector<std::vector<int>> &tab) {
     std::vector<std::vector<Cell>> newCells = {};
     for (int i = 0; i < height; i++) {
         std::vector<Cell> newRow = {};
