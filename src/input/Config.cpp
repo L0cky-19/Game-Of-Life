@@ -36,7 +36,6 @@ void Config::setup(Game *game) {
 
     string loadChoice = inputLoadChoice();
     FileHandler *filehandler = new FileHandler();
-    game->setFileHandler(filehandler);
 
     Grid* grid;
     if (loadChoice == "y") {

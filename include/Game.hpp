@@ -15,7 +15,6 @@ protected:
     Grid *grid;
     IRenderer *renderer;
     IEvolutionStrategy *evolutionStrategy;
-    FileHandler *fileHandler; //TODO: besoin ici d'être attaché?
     int iterationDelay;
     int numberOfIterations;
 public:
@@ -43,6 +42,5 @@ public:
         delete grid;
         delete renderer;
         delete evolutionStrategy;
-        delete fileHandler;
     }
 };

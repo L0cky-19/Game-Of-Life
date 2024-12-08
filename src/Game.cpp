@@ -11,7 +11,6 @@
 #include "../include/input/Config.hpp"
 using namespace std;
 
-// TODO: stoi au lieu de static cast?
 void Game::setup() {
     config.setup(this);
 }
@@ -65,7 +64,6 @@ Game::Game() :
     grid(nullptr),
     renderer(nullptr),
     evolutionStrategy(nullptr),
-    fileHandler(nullptr),
     iterationDelay(0),
     numberOfIterations(0) {}
 
@@ -93,12 +91,4 @@ void Game::setGrid(Grid *grid) {
 
 Grid *Game::getGrid() const {
     return grid;
-}
-
-FileHandler *Game::getFileHandler() const {
-    return this->fileHandler;
-}
-
-void Game::setFileHandler(FileHandler *filehandler) {
-    this->fileHandler = filehandler;
 }
