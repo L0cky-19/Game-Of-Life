@@ -3,7 +3,7 @@
 #include "../../include/Game.hpp"
 #include <iostream>
 
-GraphicRenderer::GraphicRenderer() : window(sf::VideoMode(800, 600), "Game of Life"), waitingForInput(false) {
+GraphicRenderer::GraphicRenderer() : window(sf::VideoMode(800, 600), "Game of Life",sf::Style::Titlebar | sf::Style::Close), waitingForInput(false) {
     window.setFramerateLimit(60);
 
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
