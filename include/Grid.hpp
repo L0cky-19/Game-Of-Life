@@ -10,7 +10,7 @@ private:
     int height;
     bool isToroidal;
 public:
-    Grid(int width, int height); // TODO: use gridData directly?
+    Grid(int width, int height);
     void initCells(const std::vector<std::vector<int>> &tab);
     void initCellsRandom();
     bool calculateNextGen(IEvolutionStrategy *evolutionStrategy);
