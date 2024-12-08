@@ -9,7 +9,7 @@
 Config::Config() :
     questions{
         {inputType::inputLoadChoice, "\033[31mDo you want to load from file?\033[0m (y/n): "},
-        {inputType::inputFilename, "\033[31mEnter the name of the saved game file or select a pattern: (0: dying, 1: glider-gun, 2: glider, 3: oscillator, 4: spaceship , 5: stable)\033[0m "},
+        {inputType::inputFilename, "\033[31mEnter the name of the saved game file or select a pattern:\033[0m (0: dying, 1: glider-gun, 2: glider, 3: oscillator, 4: spaceship , 5: stable) "},
         {inputType::inputGridDataWidth, "\033[31mEnter grid width:\033[0m "},
         {inputType::inputGridDataHeight, "\033[31mEnter grid height:\033[0m "},
         {inputType::inputGridToroidal, "\033[31mDo you want a toroidal grid?\033[0m (y/n): "},
