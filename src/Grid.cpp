@@ -7,7 +7,7 @@
 #include <iostream>
 using namespace std;
 
-Grid::Grid(int width, int height, bool isToroidal) : width(width), height(height), isToroidal(isToroidal) {}
+Grid::Grid(int width, int height) : width(width), height(height) {}
 
 void Grid::initCells(const std::vector<std::vector<int>> &tab) { // FIXME: si on a plus de celules que dites ca va crash
     std::vector<std::vector<Cell>> newCells = {};
@@ -191,4 +191,8 @@ void Grid::printCells() const
 
 const std::vector<std::vector<Cell>> &Grid::getCells() const {
     return cells;
+}
+
+void Grid::setIsToroidal(bool isToroidal) {
+    this->isToroidal = isToroidal;
 }

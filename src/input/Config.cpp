@@ -42,16 +42,17 @@ void Config::setup(Game *game) {
         string filename = inputFilename();
         GridDimensions dims = filehandler->loadDimensions(filename);
         vector<vector<int>> fetchedCells = filehandler->loadInputFromFile(filename);
-        grid = new Grid(dims.width, dims.height, true);
+        grid = new Grid(dims.width, dims.height);
         grid->initCells(fetchedCells);
     } else {
         GridData gridData = inputGridData();
-        grid = new Grid(gridData.width, gridData.height, gridData.isToroidal);
+        grid = new Grid(gridData.width, gridData.height);
         grid->initCellsRandom();
     }
 
+    bool toroidal = inputGridToroidal();
+    grid->setIsToroidal(toroidal);
     game->setGrid(grid);
-    inputGridToroidal();
 
     // Configurer l'evolution strategy
     string strategyChoice = inputEvolutionStrategy();
