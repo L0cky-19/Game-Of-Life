@@ -14,7 +14,8 @@ protected:
 
 TEST_F(GridTest, CellBirth)
 {
-    Grid grid(3, 3, false);
+    Grid grid(3, 3);
+    grid.setIsToroidal(false);
     vector<vector<int>> testGrid = {
         {1, 1, 0},
         {1, 0, 0},
@@ -53,7 +54,8 @@ TEST_F(GridTest, CellBirth)
 
 TEST_F(GridTest, CellDeath)
 {
-    Grid grid(3, 3, false);
+    Grid grid(3, 3);
+    grid.setIsToroidal(false);
     vector<vector<int>> testGrid = {
         {0, 0, 0},
         {0, 1, 0},
