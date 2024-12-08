@@ -15,7 +15,6 @@ private:
 public:
     GraphicRenderer();
     void render(Grid* grid) override;
-    void update(Subject* subject) override;
     sf::RenderWindow& getWindow();
     string getName() const override;
     virtual ~GraphicRenderer() override {

@@ -3,15 +3,6 @@
 #include <iostream>
 using namespace std;
 
-void ConsoleRenderer::update(Subject *subject) {
-    Game *game = dynamic_cast<Game*>(subject);
-    if (game) {
-        render(game->getGrid());
-    } else {
-        // Handle the case where the subject is not a Game
-        std::cerr << "Error: Subject is not of type Game." << std::endl;
-    }
-}
 
 void ConsoleRenderer::render(Grid *grid) {
     system("cls"); // FIXME: detect os ? wont work for macos

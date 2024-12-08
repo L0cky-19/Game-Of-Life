@@ -7,7 +7,6 @@ class ConsoleRenderer : public IRenderer {
 public:
     ConsoleRenderer() = default;
     void render(Grid* grid) override;
-    void update(Subject* subject) override;
     string getName() const override;
     virtual ~ConsoleRenderer() override = default;
 };

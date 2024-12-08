@@ -17,16 +17,6 @@ GraphicRenderer::GraphicRenderer() : window(sf::VideoMode(800, 600), "Game of Li
     inputText.setPosition(50, 500);
 }
 
-void GraphicRenderer::update(Subject *subject) {
-    Game *game = dynamic_cast<Game*>(subject); //TODO: same function for both, define in interface?
-    if (game) {
-        render(game->getGrid());
-    } else {
-        // Handle the case where the subject is not a Game
-        std::cerr << "Error: Subject is not of type Game." << std::endl;
-    }
-}
-
 void GraphicRenderer::render(Grid *grid) {
     if (!grid)
         return;                     // Protection against null pointers

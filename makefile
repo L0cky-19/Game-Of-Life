@@ -25,6 +25,7 @@ SRCS = $(SRC_DIR)/main.cpp \
        $(SRC_DIR)/evolution-strategy/HighLifeEvolution.cpp \
        $(SRC_DIR)/file-handler/FileHandler.cpp \
        $(SRC_DIR)/input/Config.cpp \
+       $(SRC_DIR)/renderer/IRenderer.cpp \
 	   $(SRC_DIR)/observer-pattern/Subject.cpp
 
 

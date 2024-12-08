@@ -6,7 +6,7 @@ using namespace std;
 
 
 void FileHandler::update(Subject* subject) {
-    Game* game = dynamic_cast<Game*>(subject); //TODO: use game's file handler or not?
+    Game* game = dynamic_cast<Game*>(subject);
     if (game) {
         Grid* grid = game->getGrid();
         FileHandler fh = FileHandler();
@@ -54,9 +54,9 @@ vector<vector<int>> FileHandler::loadInputFromFile(string filename) {
 
 void FileHandler::saveGridToFile(Grid *grid)
 {
-    ofstream file("assets/saveGridToFile/updateGrid.txt"); //TODO: rename this folder
+    ofstream file("assets/saved-games/saved-grid.txt");
     if (!file.is_open()) {
-        throw runtime_error("Could not save file: updateGrid.txt"); //TODO: rename this name also? use string concat
+        throw runtime_error("Could not save file: saved-grid.txt, please verify path.");
     }
 
     int width = grid->getWidth();
