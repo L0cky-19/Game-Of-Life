@@ -26,29 +26,50 @@ vector<vector<int>> FileHandler::loadInputFromFile(string filename) {
     file >> width >> height;
     file.ignore();
 
-    vector<vector<int>> cells(height, vector<int>(width));
+    // Compter toutes les lignes non vides du fichier
     string line;
+    vector<string> allLines;
+    while (getline(file, line)) {
+        if (!line.empty()) {
+            allLines.push_back(line);
+        }
+    }
+
+    if (allLines.size() != height) {
+        throw runtime_error("file error: file contains incorrect number of lines.");
+    }
+
+    // Réinitialiser le fichier pour le traitement
+    file.clear();
+    file.seekg(0);
+    file >> width >> height;
+    file.ignore();
+
+    // Traitement normal du fichier
+    vector<vector<int>> cells(height, vector<int>(width));
     int lineCount = 0;
 
-    while (getline(file, line) && !line.empty()) {
-        if ((line.length() + 1) / 2 != width) {
-            throw runtime_error("Grid dimensions in file do not match specified width");
-        }
-        int j = 0;
+    while (getline(file, line) && lineCount < height) {
+        if (line.empty()) continue;
+        
+        int charCount = 0;
         for (char c : line) {
-            if (c == '1')
-                cells[lineCount][j++] = 1;
-            else if (c == 'X')
-                cells[lineCount][j++] = 2;
-            else if (c == '0')
-                cells[lineCount][j++] = 0;
+            if (c == ' ') continue;
+            if (charCount >= width) {
+                throw runtime_error("file error: line too long.");
+            }
+            if (c == '1') cells[lineCount][charCount] = 1;
+            else if (c == 'X') cells[lineCount][charCount] = 2;
+            else if (c == '0') cells[lineCount][charCount] = 0;
+            else throw runtime_error("file error: invalid character detected.");
+            charCount++;
+        }
+        if (charCount != width) {
+            throw runtime_error("file error: line too short.");
         }
         lineCount++;
     }
 
-    if (lineCount != height) {
-        throw runtime_error("Grid dimensions in file do not match specified height");
-    }
     return cells;
 }
 
