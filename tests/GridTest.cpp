@@ -45,7 +45,7 @@ TEST_F(GridTest, CellEvolution)
     {
         for (int j = 0; j < 3; j++)
         {
-            bool isAlive = cells[i][j].getType() == TypeCell::Alive;
+            bool isAlive = cells[i][j].getType() == CellType::Alive;
             EXPECT_EQ(isAlive, expectedGrid[i][j] == 1);
         }
     }

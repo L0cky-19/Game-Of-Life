@@ -1,4 +1,4 @@
-#include "../../include/renderer/Subject.hpp"
+#include "../../include/observer-pattern/Subject.hpp"
 
 void Subject::attach(std::shared_ptr<Observer> observer) {
     observers.push_back(observer);

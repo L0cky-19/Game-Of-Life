@@ -59,9 +59,9 @@ void GraphicRenderer::render(Grid *grid) {
             sf::RectangleShape cell(sf::Vector2f(cellSize - 1, cellSize - 1));
             cell.setPosition(startX + x * cellSize, startY + y * cellSize); // Adjusted position
 
-            if (cells[y][x].getType() == TypeCell::Alive)
+            if (cells[y][x].getType() == CellType::Alive)
                 cell.setFillColor(sf::Color::Black);
-            else if (cells[y][x].getType() == TypeCell::Obstacle)
+            else if (cells[y][x].getType() == CellType::Obstacle)
                 cell.setFillColor(sf::Color::Red);
             else
                 cell.setFillColor(sf::Color::White);
@@ -76,4 +76,7 @@ void GraphicRenderer::render(Grid *grid) {
 
 string GraphicRenderer::getName() const {
     return "Graphic";
+}
+sf::RenderWindow& GraphicRenderer::getWindow() {
+    return window;
 }

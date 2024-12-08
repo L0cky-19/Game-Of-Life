@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include "../Grid.hpp"
-#include "../renderer/Observer.hpp"
+#include "../observer-pattern/Observer.hpp"
 using namespace std;
 
 struct GridDimensions {
@@ -13,7 +13,7 @@ class FileHandler : public Observer {
 public:
     FileHandler() = default;
     GridDimensions loadDimensions(string filename);
-    vector<vector<int>> loadInputFromFile(string filename); //TODO: check si l'implémentation est intelligente ou non
+    vector<vector<int>> loadInputFromFile(string filename);
     void saveGridToFile(Grid *grid);
     void update(Subject* subject) override;
     virtual ~FileHandler() = default;

@@ -1,11 +1,11 @@
 #include "../include/Cell.hpp"
 
-Cell::Cell(TypeCell type) : type(type) {}
+Cell::Cell(CellType type) : type(type) {}
 
-TypeCell Cell::getType() const {
+CellType Cell::getType() const {
     return type;
 }
 
-void Cell::setType(TypeCell newType) {
+void Cell::setType(CellType newType) {
     type = newType;
 }

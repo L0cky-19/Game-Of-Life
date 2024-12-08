@@ -18,15 +18,15 @@ void Grid::initCells(const std::vector<std::vector<int>> &tab) { // FIXME: si on
         {
             if (tab[i][y] == 1)
             {
-                newRow.push_back(Cell(TypeCell::Alive));
+                newRow.push_back(Cell(CellType::Alive));
             }
             else if (tab[i][y] == 2)
             {
-                newRow.push_back(Cell(TypeCell::Obstacle));
+                newRow.push_back(Cell(CellType::Obstacle));
             }
             else
             {
-                newRow.push_back(Cell(TypeCell::Dead));
+                newRow.push_back(Cell(CellType::Dead));
             }
         }
         newCells.push_back(newRow);
@@ -50,7 +50,7 @@ void Grid::initCellsRandom()
         std::vector<Cell> newRow = {};
         for (int x = 0; x < width; x++)
         {
-            newRow.push_back(rand() % 2 == 0 ? TypeCell::Dead : TypeCell::Alive);
+            newRow.push_back(rand() % 2 == 0 ? CellType::Dead : CellType::Alive);
         }
         newCells.push_back(newRow);
     }
@@ -59,7 +59,7 @@ void Grid::initCellsRandom()
     {
         int randY = rand() % height;
         int randX = rand() % width;
-        newCells[randY][randX] = Cell(TypeCell::Obstacle);
+        newCells[randY][randX] = Cell(CellType::Obstacle);
     }
     cells = newCells;
 }
@@ -88,7 +88,7 @@ int Grid::countLiveNeighbors(int x, int y)
                 continue;
             }
 
-            if (cells[ny][nx].getType() == TypeCell::Alive)
+            if (cells[ny][nx].getType() == CellType::Alive)
             {
                 count++;
             }
@@ -97,7 +97,7 @@ int Grid::countLiveNeighbors(int x, int y)
     return count;
 }
 
-bool Grid::isGridStable(const vector<vector<TypeCell>> &nextGen) const
+bool Grid::isGridStable(const vector<vector<CellType>> &nextGen) const
 {
     for (int y = 0; y < height; y++)
     {
@@ -114,15 +114,15 @@ bool Grid::isGridStable(const vector<vector<TypeCell>> &nextGen) const
 
 bool Grid::calculateNextGen(IEvolutionStrategy *evolutionStrategy)
 {
-    vector<vector<TypeCell>> nextGen(height, vector<TypeCell>(width, TypeCell::Dead));
+    vector<vector<CellType>> nextGen(height, vector<CellType>(width, CellType::Dead));
     int neighbors = 0;
     for (int y = 0; y < height; y++)
     {
         for (int x = 0; x < width; x++)
         {
-            if (cells[y][x].getType() == TypeCell::Obstacle)
+            if (cells[y][x].getType() == CellType::Obstacle)
             {
-                nextGen[y][x] = TypeCell::Obstacle;
+                nextGen[y][x] = CellType::Obstacle;
             }
         }
     }
@@ -131,12 +131,12 @@ bool Grid::calculateNextGen(IEvolutionStrategy *evolutionStrategy)
     {
         for (int x = 0; x < width; x++)
         {
-            if (cells[y][x].getType() != TypeCell::Obstacle)
+            if (cells[y][x].getType() != CellType::Obstacle)
             {
                 neighbors = countLiveNeighbors(x, y);
                 if (evolutionStrategy->evolve(&cells[y][x], neighbors))
                 {
-                    nextGen[y][x] = TypeCell::Alive;
+                    nextGen[y][x] = CellType::Alive;
                 }
             }
         }
@@ -157,11 +157,7 @@ bool Grid::calculateNextGen(IEvolutionStrategy *evolutionStrategy)
     }
     return false;
 }
-void Grid::update(IEvolutionStrategy *evolutionStrategy)
-{
-    vector<vector<int>> tab;
-//TODO: rm
-}
+
 
 int Grid::getWidth() const {
     return width;
@@ -181,8 +177,18 @@ void Grid::printCells() const
     {
         for (int j = 0; j < getWidth(); ++j)
         {
-            cout << (cells[i][j].getType() == TypeCell::Alive ? "1" : "0"); //TODO: adapt or remove
+            if (cells[i][j].getType() == CellType::Alive) {
+                cout << "1";
+            } else if (cells[i][j].getType() == CellType::Obstacle) {
+                cout << "X";
+            } else {
+                cout << "0";
+            }
         }
         cout << endl;
     }
+}
+
+const std::vector<std::vector<Cell>> &Grid::getCells() const {
+    return cells;
 }
