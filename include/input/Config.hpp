@@ -5,11 +5,9 @@
 #include "InputType.hpp"
 #include "InputHandler.hpp"
 #include <memory>
-
-// Forward declaration
-class Game;
-
 using namespace std;
+
+class Game;
 
 struct GridData {
     int height;
@@ -22,11 +20,9 @@ private:
     map<inputType, string> questions;
     map<inputType, vector<string>> validResponses;
     unique_ptr<InputHandler> inputHandler;
-
 public:
     Config();
     void setup(Game *game);
-
     template<typename T>
     T getInput(inputType type, const T& defaultValue) {
         return inputHandler->handleInput(
@@ -36,7 +32,6 @@ public:
             type
         );
     }
-
     string inputLoadChoice();
     string inputFilename();
     GridData inputGridData();

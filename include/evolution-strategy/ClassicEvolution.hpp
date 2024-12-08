@@ -7,8 +7,8 @@ class ClassicEvolution : public IEvolutionStrategy {
 private:
     string name = "Classic";
 public:
-    bool evolve(Cell* cell, int liveNeighbors) const override; //TODO: check if we need const
     ClassicEvolution();
+    bool evolve(Cell* cell, int liveNeighbors) const override;
     string getName() const override;
     virtual ~ClassicEvolution() override = default;
 };

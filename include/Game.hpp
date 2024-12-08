@@ -2,7 +2,6 @@
 #include <string>
 #include <map>
 #include <vector>
-
 #include "./renderer/IRenderer.hpp"
 #include "./evolution-strategy/IEvolutionStrategy.hpp"
 #include "./file-handler/FileHandler.hpp"
@@ -10,11 +9,9 @@
 #include "./renderer/Subject.hpp"
 #include "./input/Config.hpp"
 
-class Game : public Subject
-{
+class Game : public Subject {
 private:
     Config config;
-
 protected: // TODO: why protected?
     Grid *grid;
     IRenderer *renderer;
@@ -23,13 +20,11 @@ protected: // TODO: why protected?
     FileHandler *fileHandler; //TODO: besoin ici d'être attaché?
     int iterationDelay;
     int numberOfIterations;
-
 public:
-    bool isPaused;
+    Game();
+    bool isPaused; //TODO: put in private/protected?
     bool isGameOver;
     bool isFileLoaded = false;
-
-    Game();
 
     void run();
     void setup();
@@ -46,6 +41,7 @@ public:
     void setNumberOfIterations(int iterations);
 
     // todo: maybe export these to a config class?
+    //TODO: on peut les enlever non?
     string inputLoadChoice(); // returns -1 if new game & text if he loads
     string inputFilename();
     GridData inputGridData(); // returns width height and todoidal or not

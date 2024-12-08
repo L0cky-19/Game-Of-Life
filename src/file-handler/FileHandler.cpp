@@ -2,26 +2,23 @@
 #include <iostream>
 #include <fstream>
 #include "../../include/Game.hpp"
-
 using namespace std;
 
 
 void FileHandler::update(Subject* subject) {
-    //TODO: here get file handler + ...
-    Game* game = dynamic_cast<Game*>(subject);
+    Game* game = dynamic_cast<Game*>(subject); //TODO: use game's file handler or not?
     if (game) {
-        Grid* grid = game->getGrid(); // Now you can access the grid
+        Grid* grid = game->getGrid();
         FileHandler fh = FileHandler();
         fh.saveGridToFile(grid);
     } else {
         throw runtime_error("Subject is not of type Game");
     }
 }
-vector<vector<int>> FileHandler::loadInputFromFile(string filename)
-{
+
+vector<vector<int>> FileHandler::loadInputFromFile(string filename) {
     ifstream file(filename);
-    if (!file.is_open())
-    {
+    if (!file.is_open()) {
         throw runtime_error("Could not open file: " + filename + ", please verify file path.");
     }
 
@@ -33,15 +30,12 @@ vector<vector<int>> FileHandler::loadInputFromFile(string filename)
     string line;
     int lineCount = 0;
 
-    while (getline(file, line) && !line.empty())
-    {
-        if ((line.length() + 1) / 2 != width)
-        {
+    while (getline(file, line) && !line.empty()) {
+        if ((line.length() + 1) / 2 != width) {
             throw runtime_error("Grid dimensions in file do not match specified width");
         }
         int j = 0;
-        for (char c : line)
-        {
+        for (char c : line) {
             if (c == '1')
                 cells[lineCount][j++] = 1;
             else if (c == 'X')
@@ -52,20 +46,17 @@ vector<vector<int>> FileHandler::loadInputFromFile(string filename)
         lineCount++;
     }
 
-    if (lineCount != height)
-    {
+    if (lineCount != height) {
         throw runtime_error("Grid dimensions in file do not match specified height");
     }
-
     return cells;
 }
 
 void FileHandler::saveGridToFile(Grid *grid)
 {
-    ofstream file("assets/saveGridToFile/updateGrid.txt");
-    if (!file.is_open())
-    {
-        throw runtime_error("Could not saved file: updateGrid.txt");
+    ofstream file("assets/saveGridToFile/updateGrid.txt"); //TODO: rename this folder
+    if (!file.is_open()) {
+        throw runtime_error("Could not save file: updateGrid.txt"); //TODO: rename this name also? use string concat
     }
 
     int width = grid->getWidth();
@@ -87,16 +78,6 @@ void FileHandler::saveGridToFile(Grid *grid)
         file << '\n';
     }
 }
-
-// Pattern FileHandler::loadPatternFromFile(string filename)
-// {
-//     return Pattern();
-// }
-
-// void FileHandler::savePatternToFile(Pattern pattern, string filename)
-// {
-//     // TODO: implement
-// }
 
 GridDimensions FileHandler::loadDimensions(string filename)
 {

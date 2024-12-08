@@ -2,8 +2,8 @@
 #include "../../include/Game.hpp"
 #include <iostream>
 using namespace std;
-void ConsoleRenderer::update(Subject *subject)
-{
+
+void ConsoleRenderer::update(Subject *subject) {
     Game *game = dynamic_cast<Game*>(subject);
     if (game) {
         render(game->getGrid());
@@ -13,9 +13,7 @@ void ConsoleRenderer::update(Subject *subject)
     }
 }
 
-void ConsoleRenderer::render(Grid *grid)
-{
-
+void ConsoleRenderer::render(Grid *grid) {
     system("cls"); // FIXME: detect os ? wont work for macos
 
     if (!grid)
@@ -40,7 +38,6 @@ void ConsoleRenderer::render(Grid *grid)
     std::cout << std::endl;
 }
 
-string ConsoleRenderer::getName() const
-{
+string ConsoleRenderer::getName() const {
     return "Console";
 }

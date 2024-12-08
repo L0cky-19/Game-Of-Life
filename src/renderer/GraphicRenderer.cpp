@@ -3,9 +3,7 @@
 #include "../../include/Game.hpp"
 #include <iostream>
 
-GraphicRenderer::GraphicRenderer()
-    : window(sf::VideoMode(800, 600), "Game of Life"), waitingForInput(false)
-{
+GraphicRenderer::GraphicRenderer() : window(sf::VideoMode(800, 600), "Game of Life"), waitingForInput(false) {
     window.setFramerateLimit(60);
 
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
@@ -19,8 +17,7 @@ GraphicRenderer::GraphicRenderer()
     inputText.setPosition(50, 500);
 }
 
-void GraphicRenderer::update(Subject *subject)
-{
+void GraphicRenderer::update(Subject *subject) {
     Game *game = dynamic_cast<Game*>(subject); //TODO: same function for both, define in interface?
     if (game) {
         render(game->getGrid());
@@ -30,8 +27,7 @@ void GraphicRenderer::update(Subject *subject)
     }
 }
 
-void GraphicRenderer::render(Grid *grid)
-{
+void GraphicRenderer::render(Grid *grid) {
     if (!grid)
         return;                     // Protection against null pointers
     window.clear(sf::Color::White); // Clear the window
@@ -78,7 +74,6 @@ void GraphicRenderer::render(Grid *grid)
     window.display(); // Display the rendered frame
 }
 
-string GraphicRenderer::getName() const
-{
+string GraphicRenderer::getName() const {
     return "Graphic";
 }

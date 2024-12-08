@@ -1,12 +1,10 @@
 #pragma once
 #include "GameState.hpp"
-#include "PauseState.hpp" // Include PauseState since we transition to it
+#include "PauseState.hpp"
 
-// Derived class representing the Play state
 class PlayState : public GameState {
 public:
     PlayState() = default;
     virtual ~PlayState() override = default;
-    // Override the update function to transition to PauseState
     std::unique_ptr<GameState> update() override;
 };
