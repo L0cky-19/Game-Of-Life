@@ -4,8 +4,6 @@
 #include <iostream>
 
 // Macro pour une sortie colorée
-#define GTEST_COUT std::cerr << "[   INFO   ] \033[1;36m"
-#define GTEST_COUT_END "\033[0m" << std::endl
 
 class GridTest : public ::testing::Test {
 protected:
@@ -16,7 +14,7 @@ protected:
     }
 };
 
-TEST_F(GridTest, CellEvolution)
+TEST_F(GridTest, CellBirth)
 {
     Grid grid(3, 3, false);
     vector<vector<int>> testGrid = {
@@ -27,12 +25,8 @@ TEST_F(GridTest, CellEvolution)
     grid.initCells(testGrid);
     IEvolutionStrategy *strategy = new ClassicEvolution();
 
-    grid.printCells();
-
     grid.calculateNextGen(strategy);
     auto cells = grid.getCells();
-
-    grid.printCells();
 
     // Expected result: all cells around center become alive, center dies
     vector<vector<int>> expectedGrid = {
@@ -41,11 +35,54 @@ TEST_F(GridTest, CellEvolution)
         {1, 1, 1}};
 
     // Verify each cell matches expected state
+    bool allMatch = true; // Track if all cells match
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < 3; j++)
         {
             bool isAlive = cells[i][j].getType() == CellType::Alive;
+            if (isAlive != (expectedGrid[i][j] == 1)) {
+                allMatch = false; // Set to false if any cell does not match
+            }
+            EXPECT_EQ(isAlive, expectedGrid[i][j] == 1);
+        }
+    }
+
+
+    delete strategy;
+}
+
+// New test to check if a cell becomes alive properly
+TEST_F(GridTest, CellDeath)
+{
+    Grid grid(3, 3, false);
+    vector<vector<int>> testGrid = {
+        {0, 0, 0},  // All Dead
+        {0, 1, 0},  // Center Alive
+        {0, 0, 0}}; // All Dead
+
+    grid.initCells(testGrid);
+    IEvolutionStrategy *strategy = new ClassicEvolution();
+
+    grid.calculateNextGen(strategy);
+    auto cells = grid.getCells();
+
+    // Expected result: cell dies as it has no neighbors
+    vector<vector<int>> expectedGrid = {
+        {0, 0, 0},
+        {0, 0, 0},
+        {0, 0, 0}};
+
+    // Verify each cell matches expected state
+    bool allMatch = true; // Track if all cells match
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            bool isAlive = cells[i][j].getType() == CellType::Alive;
+            if (isAlive != (expectedGrid[i][j] == 1)) {
+                allMatch = false; // Set to false if any cell does not match
+            }
             EXPECT_EQ(isAlive, expectedGrid[i][j] == 1);
         }
     }

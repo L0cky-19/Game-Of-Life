@@ -178,11 +178,11 @@ void Grid::printCells() const
         for (int j = 0; j < getWidth(); ++j)
         {
             if (cells[i][j].getType() == CellType::Alive) {
-                cout << "1";
+                cout << "1 ";
             } else if (cells[i][j].getType() == CellType::Obstacle) {
-                cout << "X";
+                cout << "X ";
             } else {
-                cout << "0";
+                cout << "0 ";
             }
         }
         cout << endl;
